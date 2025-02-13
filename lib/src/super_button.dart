@@ -155,7 +155,7 @@ class SuperButton extends StatelessWidget {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           alignment: alignment,
           shape: border,
-          side: enabled && ((borderWidth != null && borderColor != null) || type == ButtonType.outlinedPrimary)
+          side: enabled && ((borderWidth != null || borderColor != null) || type == ButtonType.outlinedPrimary)
               ? BorderSide(width: borderWidth ?? 1, color: borderColor ?? Theme.of(context).primaryColor)
               : null,
         ),
