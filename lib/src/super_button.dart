@@ -25,6 +25,9 @@ class SuperButton extends StatelessWidget {
   /// 按钮的文字大小
   final double? textSize;
 
+  /// 按钮加粗
+  final FontWeight? fontWeight;
+
   /// 按钮的文本显示样式 优先级高于[textColor]、[textSize]等属性
   final TextStyle? textStyle;
 
@@ -82,6 +85,7 @@ class SuperButton extends StatelessWidget {
     required this.onTap,
     this.textColor,
     this.textSize,
+    this.fontWeight,
     this.textStyle,
     this.width,
     this.height,
@@ -192,7 +196,8 @@ class SuperButton extends StatelessWidget {
             text,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: textStyle?.copyWith(color: textColor, fontSize: textSize) ?? TextStyle(color: textColor, fontSize: textSize),
+            style: textStyle?.copyWith(color: textColor, fontSize: textSize, fontWeight: fontWeight ?? SuperWidgetConfig.btnDefTextWeight) ??
+                TextStyle(color: textColor, fontSize: textSize, fontWeight: fontWeight ?? SuperWidgetConfig.btnDefTextWeight),
             textAlign: TextAlign.center,
           ),
         ),

@@ -9,6 +9,9 @@ class SuperWidgetConfig {
   /// 按钮默认色
   static Color btnDefTextColor = const Color(0xFF333333);
 
+  /// 按钮默认加粗设置
+  static FontWeight? btnDefTextWeight;
+
   /// 按钮默认圆角
   static double btnBorderRadius = 6;
 
