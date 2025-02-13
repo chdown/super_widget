@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:super_widget/src/config/super_widget_config.dart';
+import 'package:super_widget/src/widget_utils.dart';
 
 /// @author : ch
 /// @date 2024-03-08 16:52:29
@@ -53,7 +54,7 @@ class SuperButton extends StatelessWidget {
   final Alignment? alignment;
 
   /// 按钮圆角大小,
-  final double borderRadius;
+  final double? borderRadius;
   final double? topBorderRadius;
   final double? topBorderLeftRadius;
   final double? topBorderRightRadius;
@@ -93,7 +94,7 @@ class SuperButton extends StatelessWidget {
     this.paddingHorizontal = 8,
     this.paddingVertical = 6,
     this.alignment,
-    this.borderRadius = 6,
+    this.borderRadius,
     this.topBorderRadius,
     this.topBorderLeftRadius,
     this.topBorderRightRadius,
@@ -109,11 +110,14 @@ class SuperButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OutlinedBorder border = RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(topBorderRadius ?? topBorderLeftRadius ?? borderRadius),
-        topRight: Radius.circular(topBorderRadius ?? topBorderRightRadius ?? borderRadius),
-        bottomLeft: Radius.circular(bottomBorderRadius ?? bottomBorderLeftRadius ?? borderRadius),
-        bottomRight: Radius.circular(bottomBorderRadius ?? bottomBorderRightRadius ?? borderRadius),
+      borderRadius: buildBorderRadius(
+        topBorderRadius,
+        bottomBorderRadius,
+        topBorderLeftRadius,
+        topBorderRightRadius,
+        bottomBorderLeftRadius,
+        bottomBorderRightRadius,
+        borderRadius ?? SuperWidgetConfig.btnBorderRadius,
       ),
     );
     EdgeInsetsGeometry padding = this.padding ?? EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal);
@@ -202,7 +206,7 @@ class SuperButton extends StatelessWidget {
     if (!enabled) return null;
     Color? textColor = this.textColor;
     if (type == ButtonType.outlined || type == ButtonType.text) {
-      textColor = textColor ?? const Color(0xFF666666);
+      textColor = textColor ?? SuperWidgetConfig.btnDefTextColor;
     }
     return textColor;
   }
