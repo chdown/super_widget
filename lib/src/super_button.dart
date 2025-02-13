@@ -196,8 +196,8 @@ class SuperButton extends StatelessWidget {
             text,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: textStyle?.copyWith(color: textColor, fontSize: textSize, fontWeight: fontWeight ?? SuperWidgetConfig.btnDefTextWeight) ??
-                TextStyle(color: textColor, fontSize: textSize, fontWeight: fontWeight ?? SuperWidgetConfig.btnDefTextWeight),
+            style: textStyle?.copyWith(color: textColor, fontSize: textSize, fontWeight: fontWeight) ??
+                TextStyle(color: textColor, fontSize: textSize, fontWeight: fontWeight),
             textAlign: TextAlign.center,
           ),
         ),
