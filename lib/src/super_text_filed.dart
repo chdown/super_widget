@@ -32,10 +32,10 @@ class SuperTextFiled extends StatefulWidget {
   final String? originalText;
 
   /// 文本颜色
-  final Color? textColor;
+  final Color? color;
 
   /// 文本大小
-  final double? textSize;
+  final double? fontSize;
 
   /// 文本对齐方式
   final TextAlign textAlign;
@@ -137,8 +137,8 @@ class SuperTextFiled extends StatefulWidget {
   final bool noSql;
 
   final String? hintText;
-  final Color? hintTextColor;
-  final double? hintTextSize;
+  final Color? hintFontColor;
+  final double? hintFontSize;
 
   final String? counterText;
   final Widget? counter;
@@ -174,8 +174,8 @@ class SuperTextFiled extends StatefulWidget {
     this.heightH,
     this.controller,
     this.originalText,
-    this.textColor,
-    this.textSize = 14,
+    this.color,
+    this.fontSize = 14,
     this.onTap,
     this.debounceTime = 500,
     this.onChanged,
@@ -212,8 +212,8 @@ class SuperTextFiled extends StatefulWidget {
     this.focusNode,
     this.label,
     this.hintText,
-    this.hintTextColor = const Color(0xFF999999),
-    this.hintTextSize,
+    this.hintFontColor = const Color(0xFF999999),
+    this.hintFontSize,
     this.fillColor,
     this.contentPadding,
     this.counter,
@@ -327,7 +327,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
     contentPadding = widget.contentPadding;
     if (widget.isCollapsed || widget.isDense) {
       if (widget.heightH != null) {
-        double vertical = ((widget.heightH! - (widget.textSize ?? 14).toDouble()) / 2) + 1;
+        double vertical = ((widget.heightH! - (widget.fontSize ?? 14).toDouble()) / 2) + 1;
         if (vertical >= 7) {
           contentPadding = EdgeInsets.symmetric(horizontal: 7, vertical: vertical);
         }
@@ -344,7 +344,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
     return TextField(
       controller: _textController,
       cursorWidth: 1,
-      style: TextStyle(color: widget.textColor, fontSize: widget.textSize),
+      style: TextStyle(color: widget.color, fontSize: widget.fontSize),
       keyboardType: textInputType,
       textInputAction: widget.textInputAction,
       inputFormatters: formatter,
@@ -375,7 +375,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
         errorBorder: _border(widget.errorColor),
         label: widget.label,
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: widget.hintTextColor, fontSize: widget.hintTextSize ?? widget.textSize),
+        hintStyle: TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize),
         fillColor: widget.fillColor,
         filled: widget.fillColor != null,
         contentPadding: contentPadding,

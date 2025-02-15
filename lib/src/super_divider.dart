@@ -35,7 +35,7 @@ class SuperDivider extends StatelessWidget {
   final double? rightPadding;
 
   const SuperDivider({
-    Key? key,
+    super.key,
     this.color = const Color(0xFFCCCCCC),
     this.height = 0.5,
     this.isDashed = false,
@@ -46,7 +46,7 @@ class SuperDivider extends StatelessWidget {
     this.verticalPadding,
     this.topPadding,
     this.bottomPadding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

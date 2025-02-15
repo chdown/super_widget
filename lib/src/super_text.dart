@@ -8,16 +8,16 @@ class SuperText extends StatelessWidget {
   final String text;
 
   /// 颜色
-  final Color? textColor;
+  final Color? color;
 
   /// 大小
-  final double? textSize;
+  final double? fontSize;
 
   /// 样式
   final TextStyle? textStyle;
 
   /// 重量
-  final FontWeight? weight;
+  final FontWeight? fontWeight;
 
   /// 行数
   final int? maxLines;
@@ -38,9 +38,9 @@ class SuperText extends StatelessWidget {
     this.maxLines,
     this.softWrap,
     this.overflow = TextOverflow.ellipsis,
-    this.textColor,
-    this.textSize,
-    this.weight,
+    this.color,
+    this.fontSize,
+    this.fontWeight,
     this.textAlign,
   });
 
@@ -51,11 +51,11 @@ class SuperText extends StatelessWidget {
     }
     return Text(
       text,
-      style: textStyle?.copyWith(color: textColor, fontSize: textSize, fontWeight: weight) ??
+      style: textStyle?.copyWith(color: color, fontSize: fontSize, fontWeight: fontWeight) ??
           TextStyle(
-            color: textColor,
-            fontSize: textSize,
-            fontWeight: weight,
+            color: color,
+            fontSize: fontSize,
+            fontWeight: fontWeight,
           ),
       overflow: overflow,
       maxLines: maxLines,
