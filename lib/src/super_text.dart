@@ -31,9 +31,9 @@ class SuperText extends StatelessWidget {
   /// 对齐方式
   final TextAlign? textAlign;
 
-  const SuperText({
+  const SuperText(
+    this.text, {
     super.key,
-    required this.text,
     this.textStyle,
     this.maxLines,
     this.softWrap,
