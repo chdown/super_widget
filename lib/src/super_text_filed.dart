@@ -360,7 +360,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       readOnly: widget.readOnly,
       autofocus: widget.autofocus,
       minLines: widget.minLines,
-      maxLines: (widget.minLines != null && widget.minLines! > (widget.maxLines ?? 1)) ? widget.minLines : (widget.maxLines ?? 1),
+      maxLines: (widget.minLines != null && widget.maxLength != null && widget.minLines! > widget.maxLines!) ? widget.minLines : widget.maxLines,
       obscureText: widget.obscureText,
       textAlign: widget.textAlign,
       enabled: widget.enabled,
