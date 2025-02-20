@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:super_widget/src/config/super_widget_config.dart';
 
-enum KeyboardType { number, text, decimal, decimalNegative }
+enum KeyboardType { number, text, decimal, decimalNegative, multiline }
 
 enum TextFiledStyle { none, fill, outline, underline }
 
@@ -282,6 +282,9 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       case KeyboardType.decimalNegative:
         textInputType = const TextInputType.numberWithOptions(decimal: true, signed: true);
         formatter.add(XNumberTextInputFormatter(maxDecimalLength: widget.decimalLength, maxIntegerLength: widget.integerLength, isAllowNegative: true));
+        break;
+      case KeyboardType.multiline:
+        textInputType = TextInputType.multiline;
         break;
       default:
         textInputType = TextInputType.text;
