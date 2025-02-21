@@ -56,7 +56,7 @@ class SuperRichText extends StatelessWidget {
   final double? suffixEndSpace;
 
   /// 重量
-  final FontWeight? suffixTFontWeight;
+  final FontWeight? suffixFontWeight;
 
   /// 行数
   final int? maxLines;
@@ -91,7 +91,7 @@ class SuperRichText extends StatelessWidget {
     this.suffixColor,
     this.suffixFontSize,
     this.suffixStyle,
-    this.suffixTFontWeight,
+    this.suffixFontWeight,
     this.suffixEndSpace,
     this.maxLines,
     this.softWrap = true,
@@ -113,31 +113,19 @@ class SuperRichText extends StatelessWidget {
       text: TextSpan(
         text: title,
         style: titleStyle?.copyWith(color: titleColor, fontSize: titleFontSize, fontWeight: titleFontWeight) ??
-            TextStyle(
-              color: titleColor,
-              fontSize: titleFontSize,
-              fontWeight: titleFontWeight,
-            ),
+            TextStyle(color: titleColor, fontSize: titleFontSize, fontWeight: titleFontWeight),
         children: [
           if (titleEndSpace != null) WidgetSpan(child: SizedBox(width: titleEndSpace)),
           TextSpan(
             text: text,
             style: textStyle?.copyWith(color: color, fontSize: fontSize, fontWeight: fontWeight) ??
-                TextStyle(
-                  color: color,
-                  fontSize: fontSize,
-                  fontWeight: fontWeight,
-                ),
+                TextStyle(color: color, fontSize: fontSize, fontWeight: fontWeight),
           ),
           if (textEndSpace != null) WidgetSpan(child: SizedBox(width: textEndSpace)),
           TextSpan(
             text: suffixText,
-            style: suffixStyle?.copyWith(color: suffixColor, fontSize: suffixFontSize, fontWeight: suffixTFontWeight) ??
-                TextStyle(
-                  color: suffixColor,
-                  fontSize: suffixFontSize,
-                  fontWeight: suffixTFontWeight,
-                ),
+            style: suffixStyle?.copyWith(color: suffixColor, fontSize: suffixFontSize, fontWeight: suffixFontWeight) ??
+                TextStyle(color: suffixColor, fontSize: suffixFontSize, fontWeight: suffixFontWeight),
           ),
           if (suffixEndSpace != null) WidgetSpan(child: SizedBox(width: suffixEndSpace)),
           for (var span in spanList) span

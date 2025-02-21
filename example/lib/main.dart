@@ -87,6 +87,16 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text(
                 'You have pushed the button this many times:',
               ),
+              SuperRichText(
+                textAlign: TextAlign.center,
+                text: "161.7万",
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+                textEndSpace: 8,
+                suffixText: '获赞',
+                suffixFontSize: 26,
+                suffixColor: Colors.blue,
+              ),
               ExtendedImage.network(
                 "http://gips3.baidu.com/it/u=1821127123,1149655687&fm=3028&app=3028&f=JPEG&fmt=auto?w=360&h=640",
                 height: 300,
