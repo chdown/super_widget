@@ -12,6 +12,9 @@ class SuperWidgetConfig {
   /// 按钮默认圆角
   static double btnBorderRadius = 6;
 
+  /// 输入框是否默认有清除按钮
+  static bool textFiledClear = false;
+
   /// 防重复点击
   static Function()? Function(Function()? onTap, int milliseconds) onDebounceTap = (onTap, milliseconds) {
     if (onTap == null) return null;

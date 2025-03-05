@@ -125,7 +125,7 @@ class SuperTextFiled extends StatefulWidget {
   final int? maxLines;
 
   /// 是否清除
-  final bool isClear;
+  final bool? isClear;
 
   /// 是否禁用
   final bool enabled;
@@ -207,7 +207,7 @@ class SuperTextFiled extends StatefulWidget {
     this.textAlign = TextAlign.start,
     this.obscureText = false,
     this.noSql = true,
-    this.isClear = true,
+    this.isClear,
     this.enabled = true,
     this.focusNode,
     this.label,
@@ -247,11 +247,13 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
   FocusNode? _focusNode;
   TextInputType textInputType = TextInputType.text;
   bool _isClear = false;
+  bool userClear = false;
   EdgeInsetsGeometry? contentPadding;
 
   @override
   void initState() {
     super.initState();
+    userClear = widget.isClear ?? SuperWidgetConfig.textFiledClear;
     if (widget.noSql) formatter.add(FilteringTextInputFormatter.deny(RegExp(r'[=$]')));
     if (widget.maxLength != null) formatter.add(LengthLimitingTextInputFormatter(widget.maxLength!));
     if (widget.inputFormatters != null) formatter.addAll(widget.inputFormatters!);
@@ -260,11 +262,11 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
     if (widget.originalText != null) _textController?.text = widget.originalText ?? "";
     _focusNode = widget.focusNode ?? FocusNode();
 
-    _isClear = widget.isClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
+    _isClear = userClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
     _focusNode!.addListener(() {
       if (!mounted) return;
       setState(() {
-        _isClear = widget.isClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
+        _isClear = userClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
       });
     });
   }
@@ -354,7 +356,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       onTap: widget.debounceTime <= 0 ? widget.onTap : SuperWidgetConfig.onDebounceTap(widget.onTap, widget.debounceTime),
       onChanged: (text) {
         setState(() {
-          _isClear = widget.isClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
+          _isClear = userClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
         });
         widget.onChanged?.call(text);
       },
