@@ -71,7 +71,7 @@ class SuperDivider extends StatelessWidget {
           : Divider(
               thickness: height,
               height: height,
-              color: color,
+              color: color ?? SuperWidgetConfig.defaultDriverColor,
             ),
     );
   }

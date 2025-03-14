@@ -19,7 +19,7 @@ class SuperWidgetConfig {
   static double defaultTextSize = 14;
 
   /// 默认driverColor
-  static Color defaultDriverColor = const Color(0xFFCCCCCC);
+  static Color defaultDriverColor = const Color(0xFFEDEDED);
 
   /// 防重复点击
   static Function()? Function(Function()? onTap, int milliseconds) onDebounceTap = (onTap, milliseconds) {
