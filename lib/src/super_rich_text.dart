@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_widget/super_widget.dart';
 
 /// @author : ch
 /// @description 文本加载组件
@@ -112,20 +113,20 @@ class SuperRichText extends StatelessWidget {
       textAlign: textAlign,
       text: TextSpan(
         text: title,
-        style: titleStyle?.copyWith(color: titleColor, fontSize: titleFontSize, fontWeight: titleFontWeight) ??
-            TextStyle(color: titleColor, fontSize: titleFontSize, fontWeight: titleFontWeight),
+        style: titleStyle?.copyWith(color: titleColor, fontSize: titleFontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: titleFontWeight) ??
+            TextStyle(color: titleColor, fontSize: titleFontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: titleFontWeight),
         children: [
           if (titleEndSpace != null) WidgetSpan(child: SizedBox(width: titleEndSpace)),
           TextSpan(
             text: text,
-            style: textStyle?.copyWith(color: color, fontSize: fontSize, fontWeight: fontWeight) ??
-                TextStyle(color: color, fontSize: fontSize, fontWeight: fontWeight),
+            style: textStyle?.copyWith(color: color, fontSize: fontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: fontWeight) ??
+                TextStyle(color: color, fontSize: fontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: fontWeight),
           ),
           if (textEndSpace != null) WidgetSpan(child: SizedBox(width: textEndSpace)),
           TextSpan(
             text: suffixText,
-            style: suffixStyle?.copyWith(color: suffixColor, fontSize: suffixFontSize, fontWeight: suffixFontWeight) ??
-                TextStyle(color: suffixColor, fontSize: suffixFontSize, fontWeight: suffixFontWeight),
+            style: suffixStyle?.copyWith(color: suffixColor, fontSize: suffixFontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: suffixFontWeight) ??
+                TextStyle(color: suffixColor, fontSize: suffixFontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: suffixFontWeight),
           ),
           if (suffixEndSpace != null) WidgetSpan(child: SizedBox(width: suffixEndSpace)),
           for (var span in spanList) span

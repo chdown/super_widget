@@ -349,7 +349,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
     return TextField(
       controller: _textController,
       cursorWidth: 1,
-      style: TextStyle(color: widget.color, fontSize: widget.fontSize),
+      style: TextStyle(color: widget.color, fontSize: widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
       keyboardType: textInputType,
       textInputAction: widget.textInputAction,
       inputFormatters: formatter,
@@ -380,7 +380,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
         errorBorder: _border(widget.errorColor),
         label: widget.label,
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize),
+        hintStyle: TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
         fillColor: widget.fillColor,
         filled: widget.fillColor != null,
         contentPadding: contentPadding,

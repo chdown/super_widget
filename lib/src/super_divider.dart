@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:super_widget/src/config/super_widget_config.dart';
 
 /// @author : ch
 /// @description 用于分割页面组件元素的横向分割线
 ///
 class SuperDivider extends StatelessWidget {
   /// 分割线的或者分割条的颜色配置默认颜色
-  final Color color;
+  final Color? color;
 
   /// 分割线的或者分割条的高度 默认0.5
   final double height;
@@ -36,7 +37,7 @@ class SuperDivider extends StatelessWidget {
 
   const SuperDivider({
     super.key,
-    this.color = const Color(0xFFCCCCCC),
+    this.color,
     this.height = 0.5,
     this.isDashed = false,
     this.dashSpace = 5,
@@ -61,7 +62,7 @@ class SuperDivider extends StatelessWidget {
           ? CustomPaint(
               size: Size(double.infinity, height),
               painter: DashedLinePainter(
-                color: color,
+                color: color ?? SuperWidgetConfig.defaultDriverColor,
                 height: height,
                 dashWidth: dashSpace,
                 dashSpace: dashSpace,

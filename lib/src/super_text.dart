@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_widget/src/config/super_widget_config.dart';
 
 /// @author : ch
 /// @description 文本加载组件
@@ -51,10 +52,10 @@ class SuperText extends StatelessWidget {
     }
     return Text(
       text,
-      style: textStyle?.copyWith(color: color, fontSize: fontSize, fontWeight: fontWeight) ??
+      style: textStyle?.copyWith(color: color, fontSize: fontSize ?? SuperWidgetConfig.defaultTextSize, fontWeight: fontWeight) ??
           TextStyle(
             color: color,
-            fontSize: fontSize,
+            fontSize: fontSize ?? SuperWidgetConfig.defaultTextSize,
             fontWeight: fontWeight,
           ),
       overflow: overflow,

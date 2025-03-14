@@ -15,6 +15,12 @@ class SuperWidgetConfig {
   /// 输入框是否默认有清除按钮
   static bool textFiledClear = false;
 
+  /// 默认字体大小
+  static double defaultTextSize = 14;
+
+  /// 默认driverColor
+  static Color defaultDriverColor = const Color(0xFFCCCCCC);
+
   /// 防重复点击
   static Function()? Function(Function()? onTap, int milliseconds) onDebounceTap = (onTap, milliseconds) {
     if (onTap == null) return null;
