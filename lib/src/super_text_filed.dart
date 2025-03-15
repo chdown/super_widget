@@ -26,7 +26,7 @@ class SuperTextFiled extends StatefulWidget {
   final TextFiledStyle style;
 
   /// 控制器
-  final TextEditingController? controller;
+  final TextEditingController controller;
 
   /// 原始文本
   final String? originalText;
@@ -169,10 +169,10 @@ class SuperTextFiled extends StatefulWidget {
 
   const SuperTextFiled({
     super.key,
+    required this.controller,
     this.isCollapsed = false,
     this.isDense = false,
     this.heightH,
-    this.controller,
     this.originalText,
     this.color,
     this.fontSize = 14,
@@ -258,7 +258,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
     if (widget.maxLength != null) formatter.add(LengthLimitingTextInputFormatter(widget.maxLength!));
     if (widget.inputFormatters != null) formatter.addAll(widget.inputFormatters!);
 
-    _textController = widget.controller ?? TextEditingController();
+    _textController = widget.controller;
     if (widget.originalText != null) _textController?.text = widget.originalText ?? "";
     _focusNode = widget.focusNode ?? FocusNode();
 
