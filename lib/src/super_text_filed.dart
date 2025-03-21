@@ -136,6 +136,10 @@ class SuperTextFiled extends StatefulWidget {
   /// 是否不允许输入sql相关
   final bool noSql;
 
+  final double? paddingHorizontal;
+  final double? paddingLeft;
+  final double? paddingRight;
+
   final String? hintText;
   final Color? hintFontColor;
   final double? hintFontSize;
@@ -207,6 +211,9 @@ class SuperTextFiled extends StatefulWidget {
     this.textAlign = TextAlign.start,
     this.obscureText = false,
     this.noSql = true,
+    this.paddingHorizontal,
+    this.paddingLeft,
+    this.paddingRight,
     this.isClear,
     this.enabled = true,
     this.focusNode,
@@ -334,10 +341,20 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       if (widget.heightH != null) {
         double vertical = ((widget.heightH! - (widget.fontSize ?? 14).toDouble()) / 2) + 1;
         if (vertical >= 7) {
-          contentPadding = EdgeInsets.symmetric(horizontal: 7, vertical: vertical);
+          contentPadding = EdgeInsets.only(
+            left: widget.paddingLeft ?? widget.paddingHorizontal ?? 7,
+            right: widget.paddingRight ?? widget.paddingHorizontal ?? 7,
+            top: vertical,
+            bottom: vertical,
+          );
         }
       } else {
-        contentPadding ??= const EdgeInsets.symmetric(horizontal: 7, vertical: 7);
+        contentPadding ??= EdgeInsets.only(
+          left: widget.paddingLeft ?? widget.paddingHorizontal ?? 7,
+          right: widget.paddingRight ?? widget.paddingHorizontal ?? 7,
+          top: 7,
+          bottom: 7,
+        );
       }
     }
   }
