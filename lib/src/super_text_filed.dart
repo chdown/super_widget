@@ -56,7 +56,7 @@ class SuperTextFiled extends StatefulWidget {
   final double borderWidth;
 
   /// 边框颜色
-  final Color borderColor;
+  final Color? borderColor;
 
   /// 获取焦点时的颜色
   final Color? focusColor;
@@ -194,7 +194,7 @@ class SuperTextFiled extends StatefulWidget {
     this.bottomBorderLeftRadius,
     this.bottomBorderRightRadius,
     this.borderUnderLineRadius = 0,
-    this.borderColor = const Color(0xFF999999),
+    this.borderColor,
     this.focusColor,
     this.errorColor = const Color(0xFFFF0000),
     this.borderWidth = 1.0,
@@ -390,8 +390,8 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       decoration: InputDecoration(
         isCollapsed: widget.isCollapsed,
         isDense: widget.isDense,
-        border: _border(widget.borderColor),
-        enabledBorder: _border(widget.borderColor),
+        border: _border(widget.borderColor ?? SuperWidgetConfig.etBorderColor),
+        enabledBorder: _border(widget.borderColor ?? SuperWidgetConfig.etBorderColor),
         focusedBorder: _border(widget.focusColor ?? Theme.of(context).colorScheme.primary),
         focusedErrorBorder: _border(widget.errorColor),
         errorBorder: _border(widget.errorColor),

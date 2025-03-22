@@ -62,7 +62,7 @@ class SuperDivider extends StatelessWidget {
           ? CustomPaint(
               size: Size(double.infinity, height),
               painter: DashedLinePainter(
-                color: color ?? SuperWidgetConfig.defaultDriverColor,
+                color: color ?? SuperWidgetConfig.driverColor,
                 height: height,
                 dashWidth: dashSpace,
                 dashSpace: dashSpace,
@@ -71,7 +71,7 @@ class SuperDivider extends StatelessWidget {
           : Divider(
               thickness: height,
               height: height,
-              color: color ?? SuperWidgetConfig.defaultDriverColor,
+              color: color ?? SuperWidgetConfig.driverColor,
             ),
     );
   }

@@ -211,7 +211,7 @@ class SuperButton extends StatelessWidget {
     if (!enabled) return null;
     Color? textColor = this.textColor ?? textStyle?.color;
     if (type == ButtonType.outlined || type == ButtonType.text) {
-      textColor = textColor ?? SuperWidgetConfig.btnDefTextColor;
+      textColor = textColor ?? SuperWidgetConfig.btnTextColor;
     }
     return textColor;
   }
