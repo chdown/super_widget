@@ -38,7 +38,7 @@ class SuperText extends StatelessWidget {
     this.textStyle,
     this.maxLines,
     this.softWrap,
-    this.overflow = TextOverflow.ellipsis,
+    this.overflow,
     this.color,
     this.fontSize,
     this.fontWeight,
