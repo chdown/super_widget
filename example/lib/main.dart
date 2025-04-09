@@ -97,6 +97,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 suffixFontSize: 26,
                 suffixColor: Colors.blue,
               ),
+              SuperButton(
+                  type: ButtonType.filled,
+                  text: "text",
+                  onTap: () {
+                    print("11111111111111111111111111111");
+                  }),
               ExtendedImage.network(
                 "http://gips3.baidu.com/it/u=1821127123,1149655687&fm=3028&app=3028&f=JPEG&fmt=auto?w=360&h=640",
                 height: 300,

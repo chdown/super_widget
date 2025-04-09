@@ -101,7 +101,7 @@ class SuperTextFiled extends StatefulWidget {
   final VoidCallback? onTap;
 
   /// 防抖：[debounceTime]未0时，禁用防抖，否则未防丢时间
-  final int debounceTime;
+  final int? debounceTime;
 
   /// 内容改变监听
   final ValueChanged<String>? onChanged;
@@ -181,7 +181,7 @@ class SuperTextFiled extends StatefulWidget {
     this.color,
     this.fontSize = 14,
     this.onTap,
-    this.debounceTime = 500,
+    this.debounceTime,
     this.onChanged,
     this.onSubmitted,
     this.keyboardType,
@@ -370,7 +370,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       keyboardType: textInputType,
       textInputAction: widget.textInputAction,
       inputFormatters: formatter,
-      onTap: widget.debounceTime <= 0 ? widget.onTap : SuperWidgetConfig.onDebounceTap(widget.onTap, widget.debounceTime),
+      onTap: widget.debounceTime == 0 ? widget.onTap : SuperWidgetConfig.onDebounceTap(widget.onTap, widget.debounceTime ?? SuperWidgetConfig.debounceTime),
       onChanged: (text) {
         setState(() {
           _isClear = userClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;

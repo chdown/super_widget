@@ -76,7 +76,7 @@ class SuperButton extends StatelessWidget {
   final bool enabled;
 
   /// 防抖：[debounceTime]未0时，禁用防抖，否则未防丢时间
-  final int debounceTime;
+  final int? debounceTime;
 
   const SuperButton({
     super.key,
@@ -108,7 +108,7 @@ class SuperButton extends StatelessWidget {
     this.borderWidth,
     this.borderColor,
     this.enabled = true,
-    this.debounceTime = 500,
+    this.debounceTime,
   });
 
   @override
@@ -128,7 +128,7 @@ class SuperButton extends StatelessWidget {
     Color? textColor = getTextColor(Theme.of(context).primaryColor);
     Widget buttonWidget = const SizedBox.shrink();
 
-    var tmpOnTap = debounceTime <= 0 ? onTap : SuperWidgetConfig.onDebounceTap(onTap, debounceTime);
+    var tmpOnTap = debounceTime == null ? onTap : SuperWidgetConfig.onDebounceTap(onTap, debounceTime ?? SuperWidgetConfig.debounceTime);
 
     if (type == ButtonType.filled) {
       buttonWidget = FilledButton(
