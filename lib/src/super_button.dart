@@ -44,6 +44,8 @@ class SuperButton extends StatelessWidget {
 
   /// 按钮背景色
   final Color? backgroundColor;
+  final Color? disabledBackgroundColor;
+  final Color? disabledForegroundColor;
 
   /// 按钮外边距
   final EdgeInsetsGeometry? margin;
@@ -93,6 +95,8 @@ class SuperButton extends StatelessWidget {
     this.prefixWidget,
     this.suffixWidget,
     this.backgroundColor,
+    this.disabledBackgroundColor,
+    this.disabledForegroundColor,
     this.margin,
     this.padding,
     this.paddingHorizontal = 8,
@@ -135,6 +139,8 @@ class SuperButton extends StatelessWidget {
         onPressed: enabled ? tmpOnTap : null,
         child: getChildren(textColor),
         style: FilledButton.styleFrom(
+          disabledBackgroundColor: disabledBackgroundColor,
+          disabledForegroundColor: disabledForegroundColor,
           backgroundColor: backgroundColor,
           padding: padding,
           minimumSize: const Size(0, 0),
@@ -149,6 +155,8 @@ class SuperButton extends StatelessWidget {
         onPressed: enabled ? tmpOnTap : null,
         child: getChildren(textColor),
         style: FilledButton.styleFrom(
+          disabledBackgroundColor: disabledBackgroundColor,
+          disabledForegroundColor: disabledForegroundColor,
           backgroundColor: backgroundColor,
           padding: padding,
           minimumSize: const Size(0, 0),
@@ -165,6 +173,8 @@ class SuperButton extends StatelessWidget {
         onPressed: enabled ? tmpOnTap : null,
         child: getChildren(textColor),
         style: TextButton.styleFrom(
+          disabledBackgroundColor: disabledBackgroundColor,
+          disabledForegroundColor: disabledForegroundColor,
           backgroundColor: backgroundColor,
           padding: padding,
           minimumSize: const Size(0, 0),
