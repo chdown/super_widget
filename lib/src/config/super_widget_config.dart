@@ -25,7 +25,7 @@ class SuperWidgetConfig {
   static Color driverColor = const Color(0xFFEDEDED);
 
   /// 防抖默认时间
-  static int debounceTime = 1000;
+  static int debounceTime = 500;
 
   /// 防重复点击
   static Function()? Function(Function()? onTap, int milliseconds) onDebounceTap = (onTap, milliseconds) {
