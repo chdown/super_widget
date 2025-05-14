@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:super_widget/src/config/super_widget_config.dart';
 
+import 'click_throttler_utils.dart';
+
 enum KeyboardType { number, text, decimal, decimalNegative, multiline }
 
 enum TextFiledStyle { none, fill, outline, underline }
@@ -370,7 +372,12 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       keyboardType: textInputType,
       textInputAction: widget.textInputAction,
       inputFormatters: formatter,
-      onTap: widget.debounceTime == 0 ? widget.onTap : SuperWidgetConfig.onDebounceTap(widget.onTap, widget.debounceTime ?? SuperWidgetConfig.debounceTime),
+      onTap: widget.debounceTime == 0
+          ? widget.onTap
+          : () {
+              if (!ClickThrottlerUtils.canClick(Duration(milliseconds: widget.debounceTime ?? SuperWidgetConfig.debounceTime))) return;
+              widget.onTap?.call();
+            },
       onChanged: (text) {
         setState(() {
           _isClear = userClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;

@@ -26,16 +26,4 @@ class SuperWidgetConfig {
 
   /// 防抖默认时间
   static int debounceTime = 500;
-
-  /// 防重复点击
-  static Function()? Function(Function()? onTap, int milliseconds) onDebounceTap = (onTap, milliseconds) {
-    if (onTap == null) return null;
-    DateTime? lastTime;
-    return () {
-      if (lastTime == null || DateTime.now().difference(lastTime!).inMilliseconds > milliseconds) {
-        onTap();
-      }
-      lastTime = DateTime.now();
-    };
-  };
 }

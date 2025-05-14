@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_widget/src/click_throttler_utils.dart';
 import 'package:super_widget/src/config/super_widget_config.dart';
 import 'package:super_widget/src/widget_utils.dart';
 
@@ -132,7 +133,10 @@ class SuperButton extends StatelessWidget {
     Color? textColor = getTextColor(Theme.of(context).primaryColor);
     Widget buttonWidget = const SizedBox.shrink();
 
-    var tmpOnTap = debounceTime == null ? onTap : SuperWidgetConfig.onDebounceTap(onTap, debounceTime ?? SuperWidgetConfig.debounceTime);
+    void tmpOnTap() {
+      if (!ClickThrottlerUtils.canClick(Duration(milliseconds: debounceTime ?? SuperWidgetConfig.debounceTime))) return;
+      onTap.call();
+    }
 
     if (type == ButtonType.filled) {
       buttonWidget = FilledButton(
