@@ -1,6 +1,5 @@
 library super_widget;
 
-import 'dart:async';
 import 'dart:ui';
 
 class SuperWidgetConfig {
@@ -20,9 +19,6 @@ class SuperWidgetConfig {
 
   /// 输入框是否默认有清除按钮
   static bool textFiledClear = false;
-
-  /// 默认driverColor
-  static Color driverColor = const Color(0xFFEDEDED);
 
   /// 防抖默认时间
   static int debounceTime = 500;

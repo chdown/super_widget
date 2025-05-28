@@ -278,6 +278,8 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
         _isClear = userClear && _focusNode!.hasFocus && _textController!.text.isNotEmpty;
       });
     });
+    _keyboard();
+    _getContentPadding();
   }
 
   void _keyboard() {
@@ -363,8 +365,6 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
 
   @override
   Widget build(BuildContext context) {
-    _keyboard();
-    _getContentPadding();
     return TextField(
       controller: _textController,
       cursorWidth: 1,

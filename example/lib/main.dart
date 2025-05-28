@@ -35,8 +35,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  TextEditingController textEditingController = TextEditingController();
-  TextEditingController textEditingController1 = TextEditingController();
+  TextEditingController textEditingController = TextEditingController(text: "在VideoItemWidget中添加了对房主信息的检查中添加了对房主信息的检查中添加了对房主信息的检查");
+  TextEditingController textEditingController1 = TextEditingController(text: "在VideoItemWidget中添加了对房主信息的检查中添加了对房主信息的检查中添加了对房主信息的检查");
 
   void _incrementCounter() {
     print(DateTime.now().millisecondsSinceEpoch);
@@ -87,40 +87,48 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text(
                 'You have pushed the button this many times:',
               ),
-              SuperRichText(
-                textAlign: TextAlign.center,
-                text: "161.7万",
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                textEndSpace: 8,
-                suffixText: '获赞',
-                suffixFontSize: 26,
-                suffixColor: Colors.blue,
-              ),
+              // SuperRichText(
+              //   textAlign: TextAlign.center,
+              //   text: "161.7万",
+              //   fontSize: 32,
+              //   fontWeight: FontWeight.w600,
+              //   textEndSpace: 8,
+              //   suffixText: '获赞',
+              //   suffixFontSize: 26,
+              //   suffixColor: Colors.blue,
+              // ),
               SuperButton(
                   type: ButtonType.filled,
                   text: "text",
                   onTap: () {
                     print("11111111111111111111111111111");
                   }),
-              ExtendedImage.network(
-                "http://gips3.baidu.com/it/u=1821127123,1149655687&fm=3028&app=3028&f=JPEG&fmt=auto?w=360&h=640",
-                height: 300,
+              SuperTextFiled(
+                style: TextFiledStyle.outline,
+                hintText: "hintText",
+                heightH: 40,
+                paddingHorizontal: 30,
+                paddingRight: 30,
+                isCollapsed: true,
+                controller: textEditingController,
               ),
-              SizedBox(
-                height: 50,
-                child: SuperTextFiled(
-                  style: TextFiledStyle.outline,
-                  controller: textEditingController,
+              TextField(
+                controller: textEditingController1,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 30),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {},
+                  ),
                 ),
               ),
-              SizedBox(
-                height: 50,
-                child: SuperTextFiled(
-                  style: TextFiledStyle.outline,
-                  controller: textEditingController1,
-                ),
-              ),
+              // SizedBox(
+              //   height: 50,
+              //   child: SuperTextFiled(
+              //     style: TextFiledStyle.outline,
+              //     controller: textEditingController1,
+              //   ),
+              // ),
               Text(
                 '$_counter',
                 style: Theme.of(context).textTheme.headlineMedium,
