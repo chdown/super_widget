@@ -42,6 +42,9 @@ class SuperTextFiled extends StatefulWidget {
   /// 文本对齐方式
   final TextAlign textAlign;
 
+  /// 输入内容大小写
+  final TextCapitalization textCapitalization;
+
   /// 边框圆角大小
   final double borderRadius;
   final double? topBorderRadius;
@@ -211,6 +214,7 @@ class SuperTextFiled extends StatefulWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.textAlign = TextAlign.start,
+    this.textCapitalization = TextCapitalization.none,
     this.obscureText = false,
     this.noSql = true,
     this.paddingHorizontal,
@@ -370,6 +374,7 @@ class _SuperTextFiledState extends State<SuperTextFiled> {
       cursorWidth: 1,
       style: TextStyle(color: widget.color, fontSize: widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
       keyboardType: textInputType,
+      textCapitalization: widget.textCapitalization,
       textInputAction: widget.textInputAction,
       inputFormatters: formatter,
       onTap: widget.debounceTime == 0
