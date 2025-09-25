@@ -33,7 +33,7 @@ class SuperButton extends StatelessWidget {
   final TextStyle? textStyle;
 
   // 宽度约束
-  BoxConstraints? constraints;
+  final BoxConstraints? constraints;
 
   /// 宽度
   final double? width;
