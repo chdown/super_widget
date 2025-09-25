@@ -32,6 +32,9 @@ class SuperButton extends StatelessWidget {
   /// 按钮的文本显示样式 优先级高于[textColor]、[textSize]等属性
   final TextStyle? textStyle;
 
+  // 宽度约束
+  BoxConstraints? constraints;
+
   /// 宽度
   final double? width;
 
@@ -192,6 +195,7 @@ class SuperButton extends StatelessWidget {
     return Container(
       width: width,
       height: height,
+      constraints: constraints,
       margin: margin,
       child: buttonWidget,
     );
