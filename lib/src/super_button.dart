@@ -93,6 +93,7 @@ class SuperButton extends StatelessWidget {
     this.textSize,
     this.fontWeight,
     this.textStyle,
+    this.constraints,
     this.width,
     this.height,
     this.widgetMarginHorizontal = 4,
