@@ -11,7 +11,7 @@ class SuperLoad extends StatefulWidget {
   final SuperLoadController controller;
 
   /// 点击事件
-  final FutureOr Function(Map<String, String>? params)? onTap;
+  final FutureOr Function(Map<String, dynamic>? params)? onTap;
 
   /// content页面，用于展示给客户
   final Widget child;
