@@ -36,7 +36,7 @@ class SuperExpandableText extends StatefulWidget {
   final TextStyle? collapseStyle;
 
   /// 展开状态变化回调，返回 false 可阻止状态变化
-  final bool Function(bool willExpanded)? onExpanded;
+  final bool? Function(bool willExpanded)? onExpanded;
 
   /// 富文本片段列表
   final List<TextSpan>? richTextSpans;
@@ -65,7 +65,7 @@ class _SuperExpandableTextState extends State<SuperExpandableText> {
     final willExpanded = !_expanded;
 
     // 如果用户提供了回调且返回 false，则阻止状态变化
-    if (widget.onExpanded != null && !widget.onExpanded!(willExpanded)) {
+    if (widget.onExpanded != null && widget.onExpanded!(willExpanded) == false) {
       return;
     }
 
