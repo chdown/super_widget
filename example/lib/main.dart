@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:super_widget/super_widget.dart';
+import 'super_expandable_text_example.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +21,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        '/expandable_text': (context) => const SuperExpandableTextExample(),
+      },
     );
   }
 }
@@ -103,6 +107,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   onTap: () {
                     print("11111111111111111111111111111");
                   }),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/expandable_text');
+                },
+                child: const Text('查看 SuperExpandableText 示例'),
+              ),
               SuperTextFiled(
                 style: TextFiledStyle.outline,
                 hintText: "hintText",
