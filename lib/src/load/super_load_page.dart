@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 /// 仅支持混入[Widget]
 mixin SuperLoadPage on Widget {
   /// 点击事件
-  FutureOr Function(Map<String, String>? params)? onTap;
+  FutureOr Function(Map<String, dynamic>? params)? onTap;
 
   /// 自定义参数
   Map<String, dynamic>? params;
