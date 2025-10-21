@@ -9,7 +9,7 @@ mixin SuperLoadPage on Widget {
   FutureOr Function(Map<String, String>? params)? onTap;
 
   /// 自定义参数
-  Map<String, String>? params;
+  Map<String, dynamic>? params;
 
   /// 快速创建一个缺省页
   static SuperLoadPage fast(Widget child) {

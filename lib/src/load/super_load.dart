@@ -20,7 +20,7 @@ class SuperLoad extends StatefulWidget {
   final Widget Function(Widget widget)? stateBuilder;
 
   /// 自定义参数，会传递到 [SuperLoadPage] 中
-  final Map<String, String>? params;
+  final Map<String, dynamic>? params;
 
   /// 自定义页面。自定义页面中的key会覆盖全局配置的key
   /// key可使用[SuperLoadStatus]枚举的[name]属性
