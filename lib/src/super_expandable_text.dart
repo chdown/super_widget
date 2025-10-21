@@ -11,6 +11,7 @@ class SuperExpandableText extends StatefulWidget {
     this.expandText = '展开',
     this.collapseText = '收起',
     this.maxLines = 3,
+    this.expanded = false,
     this.textStyle,
     this.collapseStyle,
     this.onExpanded,
@@ -29,6 +30,9 @@ class SuperExpandableText extends StatefulWidget {
   /// 最大行数
   final int maxLines;
 
+  /// 初始展开状态
+  final bool expanded;
+
   /// 文本样式
   final TextStyle? textStyle;
 
@@ -46,12 +50,13 @@ class SuperExpandableText extends StatefulWidget {
 }
 
 class _SuperExpandableTextState extends State<SuperExpandableText> {
-  bool _expanded = false;
+  late bool _expanded;
   late TapGestureRecognizer _linkTapGestureRecognizer;
 
   @override
   void initState() {
     super.initState();
+    _expanded = widget.expanded;
     _linkTapGestureRecognizer = TapGestureRecognizer()..onTap = _toggleExpanded;
   }
 

@@ -347,6 +347,16 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
               ),
             ),
 
+            _buildExample(
+              title: '16. 默认展开',
+              description: '初始状态为展开状态',
+              child: const SuperExpandableText(
+                text: '这个示例默认就是展开状态。通过设置 expanded: true 参数，可以让文本在初始加载时就显示完整内容，而不是截断状态。用户可以点击收起按钮将文本折叠。这个功能适用于重要信息需要默认展示的场景。',
+                maxLines: 2,
+                expanded: true,
+              ),
+            ),
+
             const SizedBox(height: 32),
           ],
         ),
