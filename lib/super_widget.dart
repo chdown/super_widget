@@ -12,5 +12,6 @@ export 'src/super_keep_wrapper.dart';
 export 'src/super_popup.dart';
 export 'src/super_text.dart';
 export 'src/super_text_filed.dart';
+export 'src/super_input.dart';
 export 'src/super_rich_text.dart';
 export 'src/super_expandable_text.dart';
