@@ -1,3 +1,5 @@
+import 'package:example/super_input_demo.dart';
+import 'package:example/super_text_filed_demo.dart' hide SuperInputDemo;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +18,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
       routes: {
         '/expandable_text': (context) => const SuperExpandableTextExample(),
+        '/super_input': (context) => const SuperInputDemo(),
+        '/super_text_filed': (context) => const SuperTextFiledDemo(),
       },
     );
   }
@@ -38,23 +39,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  TextEditingController textEditingController = TextEditingController(text: "在VideoItemWidget中添加了对房主信息的检查中添加了对房主信息的检查中添加了对房主信息的检查");
-  TextEditingController textEditingController1 = TextEditingController(text: "在VideoItemWidget中添加了对房主信息的检查中添加了对房主信息的检查中添加了对房主信息的检查");
-
-  void _incrementCounter() {
-    print(DateTime.now().millisecondsSinceEpoch);
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    ExtendedImage.globalStateWidgetBuilder = (
-      BuildContext context,
-      ExtendedImageState state,
-    ) {
+    ExtendedImage.globalStateWidgetBuilder = (BuildContext context, ExtendedImageState state) {
       switch (state.extendedImageLoadState) {
         case LoadState.loading:
           return Container(
@@ -79,80 +66,34 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     };
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text(widget.title)),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
-              ),
-              // SuperRichText(
-              //   textAlign: TextAlign.center,
-              //   text: "161.7万",
-              //   fontSize: 32,
-              //   fontWeight: FontWeight.w600,
-              //   textEndSpace: 8,
-              //   suffixText: '获赞',
-              //   suffixFontSize: 26,
-              //   suffixColor: Colors.blue,
-              // ),
-              SuperButton(
-                  type: ButtonType.filled,
-                  text: "text",
-                  onTap: () {
-                    print("11111111111111111111111111111");
-                  }),
-              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/expandable_text');
                 },
                 child: const Text('查看 SuperExpandableText 示例'),
               ),
-              SuperTextFiled(
-                style: TextFiledStyle.outline,
-                hintText: "hintText",
-                heightH: 40,
-                paddingHorizontal: 30,
-                paddingRight: 30,
-                isCollapsed: true,
-                controller: textEditingController,
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_input');
+                },
+                child: const Text('查看 super_input 示例'),
               ),
-              TextField(
-                controller: textEditingController1,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 30),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {},
-                  ),
-                ),
-              ),
-              // SizedBox(
-              //   height: 50,
-              //   child: SuperTextFiled(
-              //     style: TextFiledStyle.outline,
-              //     controller: textEditingController1,
-              //   ),
-              // ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_text_filed');
+                },
+                child: const Text('查看 super_text_filed 示例'),
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

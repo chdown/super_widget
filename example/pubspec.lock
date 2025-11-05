@@ -110,6 +110,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -123,6 +128,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fx_string:
+    dependency: transitive
+    description:
+      name: fx_string
+      sha256: "3350be2fa11cdb0d4107e4657431d05088a88795ef3145ad37902f6066a5b124"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   http:
     dependency: transitive
     description:
@@ -147,6 +160,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  intl:
+    dependency: "direct overridden"
+    description:
+      name: intl
+      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.2"
   js:
     dependency: transitive
     description:
@@ -359,6 +380,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.6"
+  tolyui:
+    dependency: "direct main"
+    description:
+      name: tolyui
+      sha256: "800e95b470fd013adb1d8f84944b5498cbca59307cd50ff2b3affc98c57af51e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4+10"
+  tolyui_color:
+    dependency: transitive
+    description:
+      name: tolyui_color
+      sha256: e79eed0a525a584dc51df9ee5445bee190d9a9b5f14690038800c4983b2c744a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
+  tolyui_feedback:
+    dependency: transitive
+    description:
+      name: tolyui_feedback
+      sha256: b6d67fd448a8d39762fd14266c706fc8da7671eaaaeb81f42a12e467ff4dfbf7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.6+6"
+  tolyui_message:
+    dependency: transitive
+    description:
+      name: tolyui_message
+      sha256: "3811b9666d90d0088c35cacfe77ef990ed6019f801000d0e39ed8f500817b3bf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.6+1"
+  tolyui_meta:
+    dependency: transitive
+    description:
+      name: tolyui_meta
+      sha256: "449bca06271d6c5d2a6b49192fd9176fa14b86fcd57c7317c4466a9d0b334674"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
+  tolyui_navigation:
+    dependency: transitive
+    description:
+      name: tolyui_navigation
+      sha256: "9fe5eddb1b8f9c178f81a507937815e9e7e7b4872ac70dd567428cd41c84e2e1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0+3"
+  tolyui_rx_layout:
+    dependency: transitive
+    description:
+      name: tolyui_rx_layout
+      sha256: "559198f0bc1d2b3d2beb75be54ae17b8d9fc4276d7ff099967e8007450ce0719"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   typed_data:
     dependency: transitive
     description:
