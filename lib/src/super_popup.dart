@@ -26,6 +26,8 @@ class SuperPopup extends StatefulWidget {
   final PopupPosition position;
   final Duration animationDuration;
   final Curve animationCurve;
+  final double? edgeThresholdHeight;
+  final double edgeThresholdRatio;
 
   const SuperPopup({
     super.key,
@@ -46,6 +48,8 @@ class SuperPopup extends StatefulWidget {
     this.position = PopupPosition.auto,
     this.animationDuration = const Duration(milliseconds: 150),
     this.animationCurve = Curves.easeInOut,
+    this.edgeThresholdHeight,
+    this.edgeThresholdRatio = 0.2,
   });
 
   @override
@@ -75,6 +79,8 @@ class SuperPopupState extends State<SuperPopup> {
             position: widget.position,
             animationDuration: widget.animationDuration,
             animationCurve: widget.animationCurve,
+            edgeThresholdHeight: widget.edgeThresholdHeight,
+            edgeThresholdRatio: widget.edgeThresholdRatio,
             child: widget.content,
           ),
         )
@@ -138,7 +144,7 @@ class _PopupContent extends StatelessWidget {
                 borderRadius: BorderRadius.circular(contentRadius ?? 10),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 10,
                   ),
                 ],
@@ -196,6 +202,8 @@ class _PopupRoute extends PopupRoute<void> {
   final Widget child;
   final Duration animationDuration;
   final Curve animationCurve;
+  final double? edgeThresholdHeight;
+  final double edgeThresholdRatio;
 
   static const double _margin = 10;
 
@@ -243,6 +251,8 @@ class _PopupRoute extends PopupRoute<void> {
     this.position = PopupPosition.auto,
     required this.animationDuration,
     this.animationCurve = Curves.easeInOut,
+    this.edgeThresholdHeight,
+    this.edgeThresholdRatio = 0.2,
   }) : super(
           settings: settings,
           filter: filter,
@@ -250,7 +260,7 @@ class _PopupRoute extends PopupRoute<void> {
         );
 
   @override
-  Color? get barrierColor => barriersColor ?? Colors.black.withOpacity(0.1);
+  Color? get barrierColor => barriersColor ?? Colors.black.withValues(alpha: 0.1);
 
   @override
   bool get barrierDismissible => true;
@@ -318,12 +328,53 @@ class _PopupRoute extends PopupRoute<void> {
     final maximum = max(topHeight, bottomHeight);
     _maxHeight = childRect.height > maximum ? maximum : childRect.height;
 
-    if (position == PopupPosition.top || (position == PopupPosition.auto && _maxHeight > bottomHeight)) {
-      _bottom = mediaQuery.size.height - targetRect.top;
+    // 先判断弹窗展示方向
+    final bool showOnTop = position == PopupPosition.top || (position == PopupPosition.auto && _maxHeight > bottomHeight);
+
+    // 计算阈值：优先使用固定高度，否则使用百分比
+    final threshold = edgeThresholdHeight ?? (_viewportRect.height * edgeThresholdRatio);
+
+    // 获取控件可见区域（targetRect与viewport的交集）
+    final visibleRect = targetRect.intersect(_viewportRect);
+
+    // 默认使用原始的targetRect
+    Rect adjustedTargetRect = targetRect;
+
+    // 检查是否需要调整定位点到可见区域中心
+    bool needAdjustToCenter = false;
+
+    if (showOnTop) {
+      // 向上展示时：检查控件顶部是否超出屏幕 或 距离顶部小于1/5
+      if (targetRect.top < _viewportRect.top || topHeight < threshold) {
+        needAdjustToCenter = true;
+      }
+    } else {
+      // 向下展示时：检查控件底部是否超出屏幕 或 距离底部小于1/5
+      if (targetRect.bottom > _viewportRect.bottom || bottomHeight < threshold) {
+        needAdjustToCenter = true;
+      }
+    }
+
+    // 如果需要调整，将定位点修改为可见区域中心
+    if (needAdjustToCenter && visibleRect.width > 0 && visibleRect.height > 0) {
+      final centerY = visibleRect.center.dy;
+      adjustedTargetRect = Rect.fromCenter(
+        center: Offset(targetRect.center.dx, centerY),
+        width: targetRect.width,
+        height: 0,
+      );
+
+      // 重新计算调整后的可用高度（根据已确定的展示方向）
+      final adjustedAvailableHeight = showOnTop ? (adjustedTargetRect.top - _viewportRect.top) : (_viewportRect.bottom - adjustedTargetRect.bottom);
+      _maxHeight = childRect.height > adjustedAvailableHeight ? adjustedAvailableHeight : childRect.height;
+    }
+
+    if (showOnTop) {
+      _bottom = mediaQuery.size.height - adjustedTargetRect.top;
       _arrowDirection = _ArrowDirection.bottom;
       _scaleAlignDy = 1;
     } else {
-      _top = targetRect.bottom;
+      _top = adjustedTargetRect.bottom;
       _arrowDirection = _ArrowDirection.top;
       _scaleAlignDy = 0;
     }
