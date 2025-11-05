@@ -6,58 +6,88 @@ import 'package:flutter/scheduler.dart';
 
 enum _ArrowDirection { top, bottom }
 
-class SuperPopup extends StatelessWidget {
+enum PopupPosition { auto, top, bottom }
+
+class SuperPopup extends StatefulWidget {
   final GlobalKey? anchorKey;
   final Widget content;
   final Widget child;
-  final EdgeInsets? padding;
   final bool isLongPress;
   final Color? backgroundColor;
+  final Color? arrowColor;
   final Color? barrierColor;
-  final bool Function()? showInterceptor;
   final bool showArrow;
+  final EdgeInsets contentPadding;
+  final double? contentRadius;
+  final BoxDecoration? contentDecoration;
+  final VoidCallback? onBeforePopup;
+  final VoidCallback? onAfterPopup;
+  final bool rootNavigator;
+  final PopupPosition position;
+  final Duration animationDuration;
+  final Curve animationCurve;
 
   const SuperPopup({
     super.key,
     required this.content,
     required this.child,
-    this.padding,
     this.anchorKey,
     this.isLongPress = false,
     this.backgroundColor,
+    this.arrowColor,
     this.showArrow = true,
-    this.showInterceptor,
     this.barrierColor,
+    this.contentPadding = const EdgeInsets.all(8),
+    this.contentRadius,
+    this.contentDecoration,
+    this.onBeforePopup,
+    this.onAfterPopup,
+    this.rootNavigator = false,
+    this.position = PopupPosition.auto,
+    this.animationDuration = const Duration(milliseconds: 150),
+    this.animationCurve = Curves.easeInOut,
   });
 
-  void _show(BuildContext context) {
-    final anchor = anchorKey?.currentContext ?? context;
+  @override
+  State<SuperPopup> createState() => SuperPopupState();
+}
+
+class SuperPopupState extends State<SuperPopup> {
+  void show() {
+    final anchor = widget.anchorKey?.currentContext ?? context;
     final renderBox = anchor.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
     final offset = renderBox.localToGlobal(renderBox.paintBounds.topLeft);
-    Navigator.of(context).push(_PopupRoute(
-      targetRect: offset & renderBox.paintBounds.size,
-      padding: padding,
-      backgroundColor: backgroundColor,
-      showArrow: showArrow,
-      barriersColor: barrierColor,
-      child: content,
-    ));
+
+    widget.onBeforePopup?.call();
+
+    Navigator.of(context, rootNavigator: widget.rootNavigator)
+        .push(
+          _PopupRoute(
+            targetRect: offset & renderBox.paintBounds.size,
+            backgroundColor: widget.backgroundColor,
+            arrowColor: widget.arrowColor,
+            showArrow: widget.showArrow,
+            barriersColor: widget.barrierColor,
+            contentPadding: widget.contentPadding,
+            contentRadius: widget.contentRadius,
+            contentDecoration: widget.contentDecoration,
+            position: widget.position,
+            animationDuration: widget.animationDuration,
+            animationCurve: widget.animationCurve,
+            child: widget.content,
+          ),
+        )
+        .then((value) => widget.onAfterPopup?.call());
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onLongPress: () {
-        bool isCanShow = showInterceptor?.call() ?? true;
-        if (isCanShow && isLongPress) _show(context);
-      },
-      onTapUp: (details) {
-        bool isCanShow = showInterceptor?.call() ?? true;
-        if (isCanShow && !isLongPress) _show(context);
-      },
-      child: child,
+      onLongPress: widget.isLongPress ? () => show() : null,
+      onTapUp: !widget.isLongPress ? (_) => show() : null,
+      child: widget.child,
     );
   }
 }
@@ -65,23 +95,29 @@ class SuperPopup extends StatelessWidget {
 class _PopupContent extends StatelessWidget {
   final Widget child;
   final GlobalKey childKey;
-  final EdgeInsets? padding;
   final GlobalKey arrowKey;
   final _ArrowDirection arrowDirection;
   final double arrowHorizontal;
   final Color? backgroundColor;
+  final Color? arrowColor;
   final bool showArrow;
+  final EdgeInsets contentPadding;
+  final double? contentRadius;
+  final BoxDecoration? contentDecoration;
 
   const _PopupContent({
     Key? key,
     required this.child,
     required this.childKey,
-    this.padding,
     required this.arrowKey,
     required this.arrowHorizontal,
     required this.showArrow,
     this.arrowDirection = _ArrowDirection.top,
     this.backgroundColor,
+    this.arrowColor,
+    this.contentRadius,
+    required this.contentPadding,
+    this.contentDecoration,
   }) : super(key: key);
 
   @override
@@ -90,22 +126,23 @@ class _PopupContent extends StatelessWidget {
       children: [
         Container(
           key: childKey,
-          padding: padding ?? const EdgeInsets.all(15),
+          padding: contentPadding,
           margin: const EdgeInsets.symmetric(vertical: 10).copyWith(
             top: arrowDirection == _ArrowDirection.bottom ? 0 : null,
             bottom: arrowDirection == _ArrowDirection.top ? 0 : null,
           ),
           constraints: const BoxConstraints(minWidth: 50),
-          decoration: BoxDecoration(
-            color: backgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
+          decoration: contentDecoration ??
+              BoxDecoration(
+                color: backgroundColor ?? Colors.white,
+                borderRadius: BorderRadius.circular(contentRadius ?? 10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
-            ],
-          ),
           child: child,
         ),
         Positioned(
@@ -117,7 +154,7 @@ class _PopupContent extends StatelessWidget {
             quarterTurns: arrowDirection == _ArrowDirection.top ? 2 : 4,
             child: CustomPaint(
               size: showArrow ? const Size(16, 8) : Size.zero,
-              painter: _TrianglePainter(color: backgroundColor ?? Colors.white),
+              painter: _TrianglePainter(color: arrowColor ?? Colors.white),
             ),
           ),
         ),
@@ -155,7 +192,10 @@ class _TrianglePainter extends CustomPainter {
 
 class _PopupRoute extends PopupRoute<void> {
   final Rect targetRect;
+  final PopupPosition position;
   final Widget child;
+  final Duration animationDuration;
+  final Curve animationCurve;
 
   static const double _margin = 10;
 
@@ -169,10 +209,13 @@ class _PopupRoute extends PopupRoute<void> {
 
   final GlobalKey _childKey = GlobalKey();
   final GlobalKey _arrowKey = GlobalKey();
-  final EdgeInsets? padding;
   final Color? backgroundColor;
+  final Color? arrowColor;
   final bool showArrow;
   final Color? barriersColor;
+  final EdgeInsets contentPadding;
+  final double? contentRadius;
+  final BoxDecoration? contentDecoration;
 
   double _maxHeight = _viewportRect.height;
   _ArrowDirection _arrowDirection = _ArrowDirection.top;
@@ -190,10 +233,16 @@ class _PopupRoute extends PopupRoute<void> {
     TraversalEdgeBehavior? traversalEdgeBehavior,
     required this.child,
     required this.targetRect,
-    this.padding,
     this.backgroundColor,
+    this.arrowColor,
     required this.showArrow,
     this.barriersColor,
+    required this.contentPadding,
+    this.contentRadius,
+    this.contentDecoration,
+    this.position = PopupPosition.auto,
+    required this.animationDuration,
+    this.animationCurve = Curves.easeInOut,
   }) : super(
           settings: settings,
           filter: filter,
@@ -225,9 +274,15 @@ class _PopupRoute extends PopupRoute<void> {
   Rect? _getRect(GlobalKey key) {
     final currentContext = key.currentContext;
     final renderBox = currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null) return null;
+    if (renderBox == null || currentContext == null) return null;
     final offset = renderBox.localToGlobal(renderBox.paintBounds.topLeft);
-    return offset & renderBox.paintBounds.size;
+    var rect = offset & renderBox.paintBounds.size;
+
+    if (Directionality.of(currentContext) == TextDirection.rtl) {
+      rect = Rect.fromLTRB(0, rect.top, rect.right - rect.left, rect.bottom);
+    }
+
+    return rect;
   }
 
   // Calculate the horizontal position of the arrow
@@ -258,31 +313,26 @@ class _PopupRoute extends PopupRoute<void> {
   void _calculateChildOffset(Rect? childRect) {
     if (childRect == null) return;
 
-    // Calculate the vertical position of the popover
     final topHeight = targetRect.top - _viewportRect.top;
     final bottomHeight = _viewportRect.bottom - targetRect.bottom;
     final maximum = max(topHeight, bottomHeight);
     _maxHeight = childRect.height > maximum ? maximum : childRect.height;
-    if (_maxHeight > bottomHeight) {
-      // Above the target
+
+    if (position == PopupPosition.top || (position == PopupPosition.auto && _maxHeight > bottomHeight)) {
       _bottom = mediaQuery.size.height - targetRect.top;
       _arrowDirection = _ArrowDirection.bottom;
       _scaleAlignDy = 1;
     } else {
-      // Below the target
       _top = targetRect.bottom;
       _arrowDirection = _ArrowDirection.top;
       _scaleAlignDy = 0;
     }
 
-    // Calculate the vertical position of the popover
     final left = targetRect.center.dx - childRect.center.dx;
     final right = left + childRect.width;
     if (right > _viewportRect.right) {
-      // at right
       _right = _margin;
     } else {
-      // at left
       _left = left < _margin ? _margin : left;
     }
   }
@@ -306,19 +356,26 @@ class _PopupRoute extends PopupRoute<void> {
     child = _PopupContent(
       childKey: _childKey,
       arrowKey: _arrowKey,
-      padding: padding,
       arrowHorizontal: _arrowHorizontal,
       arrowDirection: _arrowDirection,
       backgroundColor: backgroundColor,
+      arrowColor: arrowColor,
       showArrow: showArrow,
+      contentPadding: contentPadding,
+      contentRadius: contentRadius,
+      contentDecoration: contentDecoration,
       child: child,
     );
     if (!animation.isCompleted) {
+      final curvedAnimation = CurvedAnimation(
+        parent: animation,
+        curve: animationCurve,
+      );
       child = FadeTransition(
-        opacity: animation,
+        opacity: curvedAnimation,
         child: ScaleTransition(
           alignment: FractionalOffset(_scaleAlignDx, _scaleAlignDy),
-          scale: animation,
+          scale: curvedAnimation,
           child: child,
         ),
       );
@@ -347,5 +404,5 @@ class _PopupRoute extends PopupRoute<void> {
   }
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 150);
+  Duration get transitionDuration => animationDuration;
 }

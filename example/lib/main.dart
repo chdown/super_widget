@@ -1,9 +1,10 @@
 import 'package:example/super_input_demo.dart';
+import 'package:example/super_popup_demo.dart';
+import 'package:example/super_popup_edge_test.dart';
 import 'package:example/super_text_filed_demo.dart' hide SuperInputDemo;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:super_widget/super_widget.dart';
 import 'super_expandable_text_example.dart';
 
 void main() {
@@ -24,6 +25,8 @@ class MyApp extends StatelessWidget {
         '/expandable_text': (context) => const SuperExpandableTextExample(),
         '/super_input': (context) => const SuperInputDemo(),
         '/super_text_filed': (context) => const SuperTextFiledDemo(),
+        '/super_popup': (context) => const SuperPopupDemo(),
+        '/super_popup_edge': (context) => const SuperPopupEdgeTest(),
       },
     );
   }
@@ -89,6 +92,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.pushNamed(context, '/super_text_filed');
                 },
                 child: const Text('查看 super_text_filed 示例'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_popup');
+                },
+                child: const Text('查看 CustomPopup 示例'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_popup_edge');
+                },
+                child: const Text('Popup 边缘/全屏测试'),
               ),
             ],
           ),

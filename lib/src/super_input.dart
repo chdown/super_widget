@@ -34,9 +34,6 @@ class SuperInput extends StatefulWidget {
   /// 焦点节点
   final FocusNode? focusNode;
 
-  /// 获取焦点时的颜色
-  final Color? focusColor;
-
   /// 自动获取焦点
   final bool autofocus;
 
@@ -216,7 +213,6 @@ class SuperInput extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     // 焦点相关
     this.focusNode,
-    this.focusColor,
     this.autofocus = false,
     // 键盘相关
     this.superKeyboardType,
@@ -417,7 +413,7 @@ class _SuperInputState extends State<SuperInput> {
         contentPadding: widget.contentPadding,
         border: _border(widget.borderColor ?? SuperWidgetConfig.etBorderColor),
         enabledBorder: _border(widget.borderColor ?? SuperWidgetConfig.etBorderColor),
-        focusedBorder: _border(widget.borderFocusColor ?? widget.focusColor ?? Theme.of(context).colorScheme.primary),
+        focusedBorder: _border(widget.borderFocusColor ?? Theme.of(context).colorScheme.primary),
         errorBorder: _border(widget.borderErrorColor),
         focusedErrorBorder: _border(widget.borderErrorColor),
         counter: widget.counter,
@@ -450,9 +446,9 @@ class _SuperInputState extends State<SuperInput> {
     );
   }
 
-  Widget _defaultClearIcon(bool _isClear) {
+  Widget _defaultClearIcon(bool isClear) {
     return Visibility(
-      visible: _isClear && !widget.readOnly,
+      visible: isClear && !widget.readOnly,
       child: GestureDetector(
         onTap: () {
           if (mounted) {
