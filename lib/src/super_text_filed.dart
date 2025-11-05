@@ -176,6 +176,7 @@ class SuperTextFiled extends StatefulWidget {
   final double? suffixPaddingEnd;
   final BoxConstraints? suffixIconConstraints;
 
+  @Deprecated('Use `SuperInput` ')
   const SuperTextFiled({
     super.key,
     required this.controller,

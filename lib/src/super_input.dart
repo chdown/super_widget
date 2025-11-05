@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:super_widget/src/config/super_widget_config.dart';
 import 'package:super_widget/super_widget.dart';
-
 import 'click_throttler_utils.dart';
 
 enum SuperKeyboardType { number, decimal, decimalNegative }
@@ -109,6 +107,9 @@ class SuperInput extends StatefulWidget {
 
   /// 提交监听
   final ValueChanged<String>? onSubmitted;
+
+  /// 点击清除按钮回调
+  final VoidCallback? onClear;
 
   // ========== 边框样式 ==========
   /// 边框样式
@@ -243,6 +244,7 @@ class SuperInput extends StatefulWidget {
     this.debounceTime,
     this.onChanged,
     this.onSubmitted,
+    this.onClear,
     // 边框样式
     this.borderStyle = SuperInputBorderStyle.outline,
     this.borderRadius,
@@ -456,6 +458,7 @@ class _SuperInputState extends State<SuperInput> {
           if (mounted) {
             _textController?.clear();
             setState(() {});
+            widget.onClear?.call();
           }
         },
         child: const Padding(
