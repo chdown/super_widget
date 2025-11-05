@@ -108,7 +108,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: _basicController,
                 hintText: '请输入内容...',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 isClear: true,
               ),
@@ -116,49 +115,8 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: TextEditingController(),
                 originalText: '这是原始文本',
-                border: const OutlineInputBorder(),
+                borderColor: Colors.blue,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              _buildLabel('使用 height 动态计算 contentPadding (height=40)'),
-              Row(
-                children: [
-                  Expanded(
-                    child: SuperInput(controller: TextEditingController(), hintText: '高度40的输入框', height: 40, border: const OutlineInputBorder()),
-                  ),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    flex: 0,
-                    child: Text(
-                      'TextPainter精确计算\n考虑textScaleFactor',
-                      style: TextStyle(fontSize: 11, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-              _buildLabel('使用 height 动态计算 contentPadding (height=50, fontSize=16)'),
-              Row(
-                children: [
-                  Expanded(
-                    child: SuperInput(controller: TextEditingController(), hintText: '高度50，字体16', height: 50, fontSize: 16, border: const OutlineInputBorder()),
-                  ),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    flex: 0,
-                    child: Text(
-                      '自适应系统字体缩放\n和语言环境',
-                      style: TextStyle(fontSize: 11, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-              _buildLabel('对比：手动设置 contentPadding (不使用 height)'),
-              SuperInput(
-                controller: TextEditingController(),
-                hintText: '手动设置padding',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                border: const OutlineInputBorder(),
               ),
             ]),
 
@@ -169,7 +127,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                 controller: _numberController,
                 superKeyboardType: SuperKeyboardType.number,
                 hintText: '只能输入数字',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 maxLength: 10,
               ),
@@ -180,7 +137,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                 decimalLength: 2,
                 integerLength: 6,
                 hintText: '可输入小数，最多2位',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               _buildLabel('负数小数输入 (SuperKeyboardType.decimalNegative)'),
@@ -189,7 +145,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                 superKeyboardType: SuperKeyboardType.decimalNegative,
                 decimalLength: 3,
                 hintText: '可输入负数和小数',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
             ]),
@@ -201,18 +156,10 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                 controller: _passwordController,
                 obscureText: true,
                 hintText: '请输入密码',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               _buildLabel('多行文本输入 (3-5行)'),
-              SuperInput(
-                controller: _multilineController,
-                minLines: 3,
-                maxLines: 5,
-                hintText: '请输入多行文本...',
-                border: const OutlineInputBorder(),
-                contentPadding: const EdgeInsets.all(12),
-              ),
+              SuperInput(controller: _multilineController, minLines: 3, maxLines: 5, hintText: '请输入多行文本...', contentPadding: const EdgeInsets.all(12)),
             ]),
 
             // ========== 状态控制 ==========
@@ -221,36 +168,84 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: _readonlyController,
                 readOnly: true,
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 fillColor: Colors.grey[100],
               ),
               _buildLabel('禁用状态'),
-              SuperInput(
-                controller: _disabledController,
-                enabled: false,
-                border: const OutlineInputBorder(),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
+              SuperInput(controller: _disabledController, enabled: false, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
             ]),
 
             // ========== 边框样式 ==========
             _buildSection('5. 边框样式', [
-              _buildLabel('自定义边框颜色'),
+              _buildLabel('Outline边框 + 自定义颜色'),
+              Row(
+                children: [
+                  Expanded(
+                    child: SuperInput(
+                      controller: TextEditingController(),
+                      hintText: '蓝色边框',
+                      borderStyle: SuperInputBorderStyle.outline,
+                      borderColor: Colors.blue,
+                      borderWidth: 2,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    flex: 0,
+                    child: Text(
+                      'borderStyle\n+ borderColor',
+                      style: TextStyle(fontSize: 11, color: Colors.green),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+              _buildLabel('不同状态不同颜色'),
               SuperInput(
                 controller: _withBorderController,
-                hintText: '蓝色边框',
-                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 2)),
-                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.green, width: 2)),
+                hintText: '默认蓝色，聚焦绿色',
+                borderStyle: SuperInputBorderStyle.outline,
+                borderColor: Colors.blue,
+                borderFocusColor: Colors.green,
+                borderWidth: 2,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              _buildLabel('Fill填充样式 + 背景色'),
+              SuperInput(
+                controller: TextEditingController(),
+                hintText: 'Fill样式',
+                borderStyle: SuperInputBorderStyle.fill,
+                fillColor: Colors.blue[50],
+                borderRadius: BorderRadius.circular(12),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               _buildLabel('下划线边框'),
               SuperInput(
                 controller: TextEditingController(),
                 hintText: '下划线样式',
-                enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 2)),
+                borderStyle: SuperInputBorderStyle.underline,
+                borderColor: Colors.grey,
+                borderFocusColor: Colors.blue,
+                borderWidth: 2,
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              _buildLabel('自定义圆角 (只有上方圆角)'),
+              SuperInput(
+                controller: TextEditingController(),
+                hintText: '只有上方圆角',
+                borderStyle: SuperInputBorderStyle.outline,
+                borderColor: Colors.orange,
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              _buildLabel('无边框'),
+              SuperInput(
+                controller: TextEditingController(),
+                hintText: '无边框样式',
+                borderStyle: SuperInputBorderStyle.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                fillColor: Colors.grey[100],
               ),
             ]),
 
@@ -260,7 +255,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: _withPrefixSuffixController,
                 hintText: '请输入金额',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 prefixIcon: const Icon(Icons.attach_money, color: Colors.green),
                 suffixText: '元',
@@ -271,7 +265,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: TextEditingController(),
                 hintText: '请输入网址',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 prefixText: 'https://',
                 prefixStyle: const TextStyle(color: Colors.blue),
@@ -284,7 +277,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: _validationController,
                 hintText: '请输入邮箱',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 errorText: _validationError.isEmpty ? null : _validationError,
                 prefixIcon: const Icon(Icons.email),
@@ -294,7 +286,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: TextEditingController(),
                 hintText: '最多输入50个字符',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 maxLength: 50,
                 counterText: '',
@@ -311,8 +302,9 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                 fontSize: 18,
                 hintFontColor: Colors.purple[200],
                 hintFontSize: 16,
-                border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.purple, width: 2)),
-                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.purple, width: 3)),
+                borderColor: Colors.purple,
+                borderFocusColor: Colors.purple,
+                borderWidth: 2,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 fillColor: Colors.purple[50],
               ),
@@ -321,7 +313,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                 controller: TextEditingController(),
                 labelText: '用户名',
                 hintText: '请输入用户名',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 prefixIcon: const Icon(Icons.person),
               ),
@@ -333,7 +324,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: TextEditingController(),
                 hintText: '输入内容会显示在下方',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 onChanged: (text) {
                   setState(() {
@@ -350,7 +340,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: TextEditingController(),
                 hintText: '输入后按回车',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 textInputAction: TextInputAction.done,
                 onSubmitted: (text) {
@@ -361,7 +350,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
               SuperInput(
                 controller: TextEditingController(),
                 hintText: '点击输入框',
-                border: const OutlineInputBorder(),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 readOnly: true,
                 debounceTime: 500,
@@ -380,7 +368,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                     controller: TextEditingController(),
                     labelText: '姓名',
                     hintText: '请输入姓名',
-                    border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     prefixIcon: const Icon(Icons.person),
                   ),
@@ -389,7 +376,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                     controller: TextEditingController(),
                     labelText: '手机号',
                     hintText: '请输入手机号',
-                    border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     prefixIcon: const Icon(Icons.phone),
                     superKeyboardType: SuperKeyboardType.number,
@@ -401,7 +387,6 @@ class _SuperInputDemoState extends State<SuperInputDemo> {
                     controller: TextEditingController(),
                     labelText: '地址',
                     hintText: '请输入详细地址',
-                    border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.all(12),
                     prefixIcon: const Icon(Icons.location_on),
                     minLines: 3,

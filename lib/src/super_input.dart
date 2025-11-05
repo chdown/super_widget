@@ -8,6 +8,8 @@ import 'click_throttler_utils.dart';
 
 enum SuperKeyboardType { number, decimal, decimalNegative }
 
+enum SuperInputBorderStyle { none, fill, outline, underline }
+
 /// @author : ch
 /// @date 2024-01-19 21:59:11
 /// @description 输入框组件
@@ -40,7 +42,6 @@ class SuperInput extends StatefulWidget {
   /// 自动获取焦点
   final bool autofocus;
 
-  // ========== 键盘相关 ==========
   /// 自定义键盘类型（number/decimal/decimalNegative）
   final SuperKeyboardType? superKeyboardType;
 
@@ -62,7 +63,6 @@ class SuperInput extends StatefulWidget {
   /// 整数位长度
   final int? integerLength;
 
-  // ========== 布局相关 ==========
   /// 装饰是否与输入字段大小相同，该属性用于修改高度
   final bool isCollapsed;
 
@@ -111,23 +111,23 @@ class SuperInput extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
 
   // ========== 边框样式 ==========
-  /// 默认边框
-  final InputBorder? border;
+  /// 边框样式
+  final SuperInputBorderStyle borderStyle;
 
-  /// 启用状态边框
-  final InputBorder? enabledBorder;
+  /// 边框圆角
+  final BorderRadius? borderRadius;
 
-  /// 获得焦点时边框
-  final InputBorder? focusedBorder;
+  /// 边框宽度
+  final double borderWidth;
 
-  /// 禁用状态边框
-  final InputBorder? disabledBorder;
+  /// 边框颜色
+  final Color? borderColor;
 
-  /// 错误状态边框
-  final InputBorder? errorBorder;
+  /// 获取焦点时边框颜色
+  final Color? borderFocusColor;
 
-  /// 获得焦点且错误状态边框
-  final InputBorder? focusedErrorBorder;
+  /// 错误状态边框颜色
+  final Color borderErrorColor;
 
   // ========== 提示文本 ==========
   /// 提示文本
@@ -179,7 +179,6 @@ class SuperInput extends StatefulWidget {
   /// 计数器样式
   final TextStyle? counterStyle;
 
-  // ========== 前缀 ==========
   /// 前缀图标
   final Widget? prefixIcon;
 
@@ -192,7 +191,6 @@ class SuperInput extends StatefulWidget {
   /// 前缀图标约束
   final BoxConstraints? prefixIconConstraints;
 
-  // ========== 后缀 ==========
   /// 后缀图标
   final Widget? suffixIcon;
 
@@ -246,12 +244,12 @@ class SuperInput extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     // 边框样式
-    this.border,
-    this.enabledBorder,
-    this.focusedBorder,
-    this.disabledBorder,
-    this.errorBorder,
-    this.focusedErrorBorder,
+    this.borderStyle = SuperInputBorderStyle.outline,
+    this.borderRadius,
+    this.borderWidth = 1.0,
+    this.borderColor,
+    this.borderFocusColor,
+    this.borderErrorColor = const Color(0xFFFF0000),
     // 提示文本
     this.hintText,
     this.hintFontColor = const Color(0xFF999999),
@@ -344,6 +342,36 @@ class _SuperInputState extends State<SuperInput> {
     }
   }
 
+  /// 根据边框样式和颜色生成InputBorder
+  InputBorder _border(Color color) {
+    InputBorder inputBorder = InputBorder.none;
+
+    switch (widget.borderStyle) {
+      case SuperInputBorderStyle.outline:
+        inputBorder = OutlineInputBorder(
+          borderSide: BorderSide(color: color, width: widget.borderWidth),
+          borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+        );
+        break;
+      case SuperInputBorderStyle.fill:
+        inputBorder = OutlineInputBorder(
+          borderSide: const BorderSide(style: BorderStyle.none),
+          borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+        );
+        break;
+      case SuperInputBorderStyle.underline:
+        inputBorder = UnderlineInputBorder(
+          borderSide: BorderSide(color: color, width: widget.borderWidth),
+          borderRadius: widget.borderRadius ?? BorderRadius.zero,
+        );
+        break;
+      case SuperInputBorderStyle.none:
+        inputBorder = InputBorder.none;
+        break;
+    }
+    return inputBorder;
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -385,12 +413,11 @@ class _SuperInputState extends State<SuperInput> {
         fillColor: widget.fillColor,
         filled: widget.fillColor != null,
         contentPadding: widget.contentPadding,
-        border: widget.border,
-        errorBorder: widget.errorBorder,
-        focusedBorder: widget.focusedBorder,
-        focusedErrorBorder: widget.focusedErrorBorder,
-        disabledBorder: widget.disabledBorder,
-        enabledBorder: widget.enabledBorder,
+        border: _border(widget.borderColor ?? SuperWidgetConfig.etBorderColor),
+        enabledBorder: _border(widget.borderColor ?? SuperWidgetConfig.etBorderColor),
+        focusedBorder: _border(widget.borderFocusColor ?? widget.focusColor ?? Theme.of(context).colorScheme.primary),
+        errorBorder: _border(widget.borderErrorColor),
+        focusedErrorBorder: _border(widget.borderErrorColor),
         counter: widget.counter,
         counterText: widget.counterText,
         counterStyle: widget.counterStyle,
