@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:super_widget/src/widgets/triangle_painter.dart';
 
 enum _ArrowDirection { top, bottom }
 
@@ -160,39 +161,12 @@ class _PopupContent extends StatelessWidget {
             quarterTurns: arrowDirection == _ArrowDirection.top ? 2 : 4,
             child: CustomPaint(
               size: showArrow ? const Size(16, 8) : Size.zero,
-              painter: _TrianglePainter(color: arrowColor ?? Colors.white),
+              painter: TrianglePainter(color: arrowColor ?? Colors.white),
             ),
           ),
         ),
       ],
     );
-  }
-}
-
-class _TrianglePainter extends CustomPainter {
-  final Color color;
-
-  const _TrianglePainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    final path = Path();
-    paint.isAntiAlias = true;
-    paint.color = color;
-
-    path.lineTo(size.width * 0.66, size.height * 0.86);
-    path.cubicTo(size.width * 0.58, size.height * 1.05, size.width * 0.42, size.height * 1.05, size.width * 0.34, size.height * 0.86);
-    path.cubicTo(size.width * 0.34, size.height * 0.86, 0, 0, 0, 0);
-    path.cubicTo(0, 0, size.width, 0, size.width, 0);
-    path.cubicTo(size.width, 0, size.width * 0.66, size.height * 0.86, size.width * 0.66, size.height * 0.86);
-    path.cubicTo(size.width * 0.66, size.height * 0.86, size.width * 0.66, size.height * 0.86, size.width * 0.66, size.height * 0.86);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
   }
 }
 
