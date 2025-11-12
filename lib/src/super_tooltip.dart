@@ -46,7 +46,6 @@ class SuperTooltip extends StatefulWidget {
     this.onAfterDismiss,
     this.controller,
     this.contentPadding = const EdgeInsets.all(16),
-    this.axis = Axis.vertical,
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
@@ -82,9 +81,6 @@ class SuperTooltip extends StatefulWidget {
 
   /// 内容内边距
   final EdgeInsetsGeometry contentPadding;
-
-  /// 轴向
-  final Axis axis;
 
   /// 是否长按触发
   final bool isLongPress;
@@ -332,9 +328,6 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final targetPosition = renderBox.localToGlobal(Offset.zero);
     final targetCenterPosition = Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
 
-    final bool targetInLeftHalf = targetCenterPosition.dx <= MediaQuery.of(context).size.width / 2;
-    final bool targetInRightHalf = targetCenterPosition.dx > MediaQuery.of(context).size.width / 2;
-
     // 判断提示框应该显示在目标下方还是上方
     // 当目标在上半部分时，提示框显示在下方；当目标在下半部分时，提示框显示在上方
     final bool showTooltipBelow = switch (widget.position) {
@@ -343,27 +336,17 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       _ => targetCenterPosition.dy <= MediaQuery.of(context).size.height / 2,  // 自动：上半部分 -> 下方
     };
 
-    final bool showTooltipAbove = switch (widget.position) {
-      TooltipPosition.top => true,       // 强制显示在上方
-      TooltipPosition.bottom => false,   // 强制显示在下方
-      _ => targetCenterPosition.dy > MediaQuery.of(context).size.height / 2,   // 自动：下半部分 -> 上方
+    // 根据位置确定锚点
+    Alignment targetAnchor = switch (widget.position) {
+      TooltipPosition.top => Alignment.topCenter,     // 锚点在目标顶部，提示框在上方
+      TooltipPosition.bottom => Alignment.bottomCenter,  // 锚点在目标底部，提示框在下方
+      _ => showTooltipBelow ? Alignment.bottomCenter : Alignment.topCenter,  // 自动
     };
 
-    // 根据轴向和位置确定锚点
-    Alignment targetAnchor = switch (widget.axis) {
-      Axis.horizontal when targetInRightHalf => Alignment.centerLeft,
-      Axis.horizontal when targetInLeftHalf => Alignment.centerRight,
-      Axis.vertical when showTooltipBelow => Alignment.bottomCenter,  // 锚点在目标底部，提示框在下方
-      Axis.vertical when showTooltipAbove => Alignment.topCenter,     // 锚点在目标顶部，提示框在上方
-      _ => Alignment.center,
-    };
-
-    Alignment followerAnchor = switch (widget.axis) {
-      Axis.horizontal when targetInRightHalf => Alignment.centerRight,
-      Axis.horizontal when targetInLeftHalf => Alignment.centerLeft,
-      Axis.vertical when showTooltipBelow => Alignment.topCenter,     // 提示框的顶部对齐目标的底部
-      Axis.vertical when showTooltipAbove => Alignment.bottomCenter,  // 提示框的底部对齐目标的顶部
-      _ => Alignment.center,
+    Alignment followerAnchor = switch (widget.position) {
+      TooltipPosition.top => Alignment.bottomCenter,  // 提示框的底部对齐目标的顶部
+      TooltipPosition.bottom => Alignment.topCenter,     // 提示框的顶部对齐目标的底部
+      _ => showTooltipBelow ? Alignment.topCenter : Alignment.bottomCenter,  // 自动
     };
 
     // 计算水平溢出和边缘距离
@@ -377,9 +360,12 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     double dx = 0;
 
     if (edgeFromHorizontal < widget.contentPadding.horizontal / 2) {
-      if (targetInLeftHalf) {
+      // 需要调整水平位置以避免边缘溢出
+      if (edgeFromLeft < edgeFromRight) {
+        // 左边空间不足，向右调整
         dx = (widget.contentPadding.horizontal / 2) - edgeFromHorizontal;
-      } else if (targetInRightHalf) {
+      } else {
+        // 右边空间不足，向左调整
         dx = -(widget.contentPadding.horizontal / 2) + edgeFromHorizontal;
       }
     }
@@ -397,7 +383,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     if (edgeFromVertical < widget.contentPadding.vertical / 2) {
       if (showTooltipBelow) {
         dy = MediaQuery.of(context).padding.top + (widget.contentPadding.vertical / 2) - edgeFromVertical;
-      } else if (showTooltipAbove) {
+      } else {
         dy = MediaQuery.of(context).padding.bottom - (widget.contentPadding.vertical / 2) + edgeFromVertical;
       }
     }
@@ -408,42 +394,40 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final screenFifth = screenHeight / 5;
     double dyOffset = 0;
 
-    if (widget.axis == Axis.vertical) {
-      final targetBottom = targetPosition.dy + targetSize.height;
+    final targetBottom = targetPosition.dy + targetSize.height;
 
-      if (targetAnchor == Alignment.topCenter) {
-        // 提示框将显示在目标上方（锚点在目标顶部）
-        // 第一步：检查是否需要纠正 - 目标顶部距离屏幕顶部较近（< 1/5）
-        final needsCorrection = targetPosition.dy < screenFifth;
+    if (targetAnchor == Alignment.topCenter) {
+      // 提示框将显示在目标上方（锚点在目标顶部）
+      // 第一步：检查是否需要纠正 - 目标顶部距离屏幕顶部较近（< 1/5）
+      final needsCorrection = targetPosition.dy < screenFifth;
 
-        if (needsCorrection) {
-          // 第二步：计算目标在屏幕上的可见区域并找到其中心
-          final visibleTop = max(0.0, targetPosition.dy);
-          final visibleBottom = min(screenHeight, targetBottom);
-          final visibleHeight = visibleBottom - visibleTop;
+      if (needsCorrection) {
+        // 第二步：计算目标在屏幕上的可见区域并找到其中心
+        final visibleTop = max(0.0, targetPosition.dy);
+        final visibleBottom = min(screenHeight, targetBottom);
+        final visibleHeight = visibleBottom - visibleTop;
 
-          // 计算偏移量，将提示框定位在可见区域中心
-          // 从目标顶部到可见区域中心的偏移
-          final visibleCenter = visibleTop + visibleHeight / 2;
-          dyOffset = visibleCenter - targetPosition.dy;
-        }
-      } else if (targetAnchor == Alignment.bottomCenter) {
-        // 提示框将显示在目标下方（锚点在目标底部）
-        // 第一步：检查是否需要纠正 - 目标底部距离屏幕底部较近（< 1/5）
-        final distanceToBottom = screenHeight - targetBottom;
-        final needsCorrection = distanceToBottom < screenFifth;
+        // 计算偏移量，将提示框定位在可见区域中心
+        // 从目标顶部到可见区域中心的偏移
+        final visibleCenter = visibleTop + visibleHeight / 2;
+        dyOffset = visibleCenter - targetPosition.dy;
+      }
+    } else if (targetAnchor == Alignment.bottomCenter) {
+      // 提示框将显示在目标下方（锚点在目标底部）
+      // 第一步：检查是否需要纠正 - 目标底部距离屏幕底部较近（< 1/5）
+      final distanceToBottom = screenHeight - targetBottom;
+      final needsCorrection = distanceToBottom < screenFifth;
 
-        if (needsCorrection) {
-          // 第二步：计算目标在屏幕上的可见区域并找到其中心
-          final visibleTop = max(0.0, targetPosition.dy);
-          final visibleBottom = min(screenHeight, targetBottom);
-          final visibleHeight = visibleBottom - visibleTop;
+      if (needsCorrection) {
+        // 第二步：计算目标在屏幕上的可见区域并找到其中心
+        final visibleTop = max(0.0, targetPosition.dy);
+        final visibleBottom = min(screenHeight, targetBottom);
+        final visibleHeight = visibleBottom - visibleTop;
 
-          // 计算偏移量，将提示框定位在可见区域中心
-          // 从目标底部到可见区域中心的偏移
-          final visibleCenter = visibleTop + visibleHeight / 2;
-          dyOffset = visibleCenter - targetBottom;
-        }
+        // 计算偏移量，将提示框定位在可见区域中心
+        // 从目标底部到可见区域中心的偏移
+        final visibleCenter = visibleTop + visibleHeight / 2;
+        dyOffset = visibleCenter - targetBottom;
       }
     }
 
