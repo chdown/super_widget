@@ -46,6 +46,10 @@ class SuperTooltip extends StatefulWidget {
     this.onAfterDismiss,
     this.controller,
     this.contentPadding = const EdgeInsets.all(16),
+    this.contentBackgroundColor = Colors.black,
+    this.contentRadius,
+    this.contentDecoration,
+    this.barrierColor,
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
@@ -81,6 +85,18 @@ class SuperTooltip extends StatefulWidget {
 
   /// 内容内边距
   final EdgeInsetsGeometry contentPadding;
+
+  /// 内容背景颜色
+  final Color contentBackgroundColor;
+
+  /// 内容圆角
+  final BorderRadiusGeometry? contentRadius;
+
+  /// 内容装饰
+  final BoxDecoration? contentDecoration;
+
+  /// 屏幕遮挡层颜色
+  final Color? barrierColor;
 
   /// 是否长按触发
   final bool isLongPress;
@@ -166,6 +182,18 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
         ),
         child: Container(
           key: contentBoxKey,
+          padding: widget.contentPadding,
+          decoration: widget.contentDecoration ??
+              BoxDecoration(
+                color: widget.contentBackgroundColor,
+                borderRadius: widget.contentRadius ?? BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
           child: widget.content,
         ),
       ),
@@ -281,7 +309,10 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _controller.dismiss,
-              child: const SizedBox.expand(),
+              child: Container(
+                color: widget.barrierColor ?? Colors.transparent,
+                child: const SizedBox.expand(),
+              ),
             ),
           );
         },

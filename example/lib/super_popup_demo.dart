@@ -125,7 +125,7 @@ class _SuperPopupDemoState extends State<SuperPopupDemo> {
                 SuperPopup(
                   isLongPress: true,
                   content: _buildPopupContent('长按触发', '需要长按按钮才能显示'),
-                  backgroundColor: Colors.purple.shade50,
+                  contentBackgroundColor: Colors.purple.shade50,
                   arrowColor: Colors.purple.shade50,
                   onBeforePopup: () => setState(() => _lastAction = '长按弹窗打开'),
                   child: ElevatedButton(
@@ -139,7 +139,7 @@ class _SuperPopupDemoState extends State<SuperPopupDemo> {
                 SuperPopup(
                   showArrow: false,
                   content: _buildPopupContent('无箭头', '这个弹窗没有箭头'),
-                  backgroundColor: Colors.orange.shade50,
+                  contentBackgroundColor: Colors.orange.shade50,
                   onBeforePopup: () => setState(() => _lastAction = '无箭头弹窗打开'),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white),
@@ -178,7 +178,7 @@ class _SuperPopupDemoState extends State<SuperPopupDemo> {
 
                 // 深色主题
                 SuperPopup(
-                  backgroundColor: Colors.grey.shade800,
+                  contentBackgroundColor: Colors.grey.shade800,
                   arrowColor: Colors.grey.shade800,
                   barrierColor: Colors.black.withOpacity(0.3),
                   content: Column(

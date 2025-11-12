@@ -375,7 +375,7 @@ class _FullScreenPopupTestState extends State<FullScreenPopupTest> {
             const Text('这个页面模拟真实场景：\n• 长列表内容\n• 不同位置的弹窗\n• 滚动时弹窗行为', style: TextStyle(color: Colors.white70, fontSize: 14)),
             const SizedBox(height: 16),
             SuperPopup(
-              backgroundColor: Colors.white,
+              contentBackgroundColor: Colors.white,
               arrowColor: Colors.white,
               content: const Padding(
                 padding: EdgeInsets.all(12),
@@ -423,7 +423,7 @@ class _FullScreenPopupTestState extends State<FullScreenPopupTest> {
             const Text('测试底部元素的弹窗表现', style: TextStyle(color: Colors.white70, fontSize: 14)),
             const SizedBox(height: 16),
             SuperPopup(
-              backgroundColor: Colors.white,
+              contentBackgroundColor: Colors.white,
               arrowColor: Colors.white,
               position: PopupPosition.auto,
               content: const Padding(
@@ -481,7 +481,7 @@ class _FullScreenPopupTestState extends State<FullScreenPopupTest> {
 
   Widget _buildComplexItem(int index) {
     return SuperPopup(
-      backgroundColor: Colors.red.shade50,
+      contentBackgroundColor: Colors.red.shade50,
       arrowColor: Colors.red.shade50,
       content: Padding(
         padding: const EdgeInsets.all(12),

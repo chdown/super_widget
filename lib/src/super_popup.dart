@@ -10,24 +10,61 @@ enum _ArrowDirection { top, bottom }
 enum PopupPosition { auto, top, bottom }
 
 class SuperPopup extends StatefulWidget {
+  /// 锚点的全局 Key，用于获取目标组件的位置。如果为 null，则使用当前 context
   final GlobalKey? anchorKey;
+
+  /// 弹窗内容
   final Widget content;
+
+  /// 触发弹窗的目标组件
   final Widget child;
+
+  /// 是否长按触发弹窗（true: 长按触发，false: 点击触发）
   final bool isLongPress;
-  final Color? backgroundColor;
-  final Color? arrowColor;
+
+  /// 箭头颜色
+  final Color arrowColor;
+
+  /// 屏幕遮挡层颜色。为 null 时使用默认半透明黑色
   final Color? barrierColor;
+
+  /// 是否显示箭头指示器
   final bool showArrow;
+
+  /// 内容内边距
   final EdgeInsets contentPadding;
-  final double? contentRadius;
+
+  /// 内容背景颜色
+  final Color contentBackgroundColor;
+
+  /// 内容圆角。为 null 时使用默认 10
+  final BorderRadiusGeometry? contentRadius;
+
+  /// 内容装饰。优先级最高，如果设置则覆盖其他装饰配置
   final BoxDecoration? contentDecoration;
+
+  /// 弹窗显示前的回调
   final VoidCallback? onBeforePopup;
+
+  /// 弹窗关闭后的回调
   final VoidCallback? onAfterPopup;
+
+  /// 是否使用根 Navigator。true 时弹窗会覆盖整个应用
   final bool rootNavigator;
+
+  /// 弹窗显示位置（top: 目标上方，bottom: 目标下方，auto: 自动选择）
   final PopupPosition position;
+
+  /// 动画持续时间
   final Duration animationDuration;
+
+  /// 动画曲线
   final Curve animationCurve;
+
+  /// 边缘阈值高度（固定像素值）。优先级高于 edgeThresholdRatio
   final double? edgeThresholdHeight;
+
+  /// 边缘阈值比例（屏幕高度的比例，默认 0.2 即 1/5）。当目标接近屏幕边缘时调整弹窗位置
   final double edgeThresholdRatio;
 
   const SuperPopup({
@@ -36,8 +73,8 @@ class SuperPopup extends StatefulWidget {
     required this.child,
     this.anchorKey,
     this.isLongPress = false,
-    this.backgroundColor,
-    this.arrowColor,
+    this.contentBackgroundColor = Colors.black,
+    this.arrowColor = Colors.black,
     this.showArrow = true,
     this.barrierColor,
     this.contentPadding = const EdgeInsets.all(8),
@@ -70,7 +107,7 @@ class SuperPopupState extends State<SuperPopup> {
         .push(
           _PopupRoute(
             targetRect: offset & renderBox.paintBounds.size,
-            backgroundColor: widget.backgroundColor,
+            backgroundColor: widget.contentBackgroundColor,
             arrowColor: widget.arrowColor,
             showArrow: widget.showArrow,
             barriersColor: widget.barrierColor,
@@ -106,10 +143,10 @@ class _PopupContent extends StatelessWidget {
   final _ArrowDirection arrowDirection;
   final double arrowHorizontal;
   final Color? backgroundColor;
-  final Color? arrowColor;
+  final Color arrowColor;
   final bool showArrow;
   final EdgeInsets contentPadding;
-  final double? contentRadius;
+  final BorderRadiusGeometry? contentRadius;
   final BoxDecoration? contentDecoration;
 
   const _PopupContent({
@@ -121,7 +158,7 @@ class _PopupContent extends StatelessWidget {
     required this.showArrow,
     this.arrowDirection = _ArrowDirection.top,
     this.backgroundColor,
-    this.arrowColor,
+    required this.arrowColor,
     this.contentRadius,
     required this.contentPadding,
     this.contentDecoration,
@@ -142,7 +179,7 @@ class _PopupContent extends StatelessWidget {
           decoration: contentDecoration ??
               BoxDecoration(
                 color: backgroundColor ?? Colors.white,
-                borderRadius: BorderRadius.circular(contentRadius ?? 10),
+                borderRadius: contentRadius ?? BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -161,7 +198,7 @@ class _PopupContent extends StatelessWidget {
             quarterTurns: arrowDirection == _ArrowDirection.top ? 2 : 4,
             child: CustomPaint(
               size: showArrow ? const Size(16, 8) : Size.zero,
-              painter: TrianglePainter(color: arrowColor ?? Colors.white),
+              painter: TrianglePainter(color: arrowColor),
             ),
           ),
         ),
@@ -191,12 +228,12 @@ class _PopupRoute extends PopupRoute<void> {
 
   final GlobalKey _childKey = GlobalKey();
   final GlobalKey _arrowKey = GlobalKey();
-  final Color? backgroundColor;
-  final Color? arrowColor;
+  final Color backgroundColor;
+  final Color arrowColor;
   final bool showArrow;
   final Color? barriersColor;
   final EdgeInsets contentPadding;
-  final double? contentRadius;
+  final BorderRadiusGeometry? contentRadius;
   final BoxDecoration? contentDecoration;
 
   double _maxHeight = _viewportRect.height;
@@ -215,8 +252,8 @@ class _PopupRoute extends PopupRoute<void> {
     TraversalEdgeBehavior? traversalEdgeBehavior,
     required this.child,
     required this.targetRect,
-    this.backgroundColor,
-    this.arrowColor,
+    required this.backgroundColor,
+    required this.arrowColor,
     required this.showArrow,
     this.barriersColor,
     required this.contentPadding,
