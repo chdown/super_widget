@@ -160,7 +160,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final resolvedPadding = widget.padding.resolve(TextDirection.ltr);
     final horizontalPadding = resolvedPadding.left + resolvedPadding.right;
 
-    final Widget messageBox = Material(
+    final Widget contentBox = Material(
       type: MaterialType.transparency,
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -179,7 +179,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
           children: [
             FadeTransition(
               opacity: _animation,
-              child: messageBox,
+              child: contentBox,
             ),
           ],
         );
@@ -259,7 +259,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
                     targetAnchor: builder.targetAnchor,
                     followerAnchor: builder.followerAnchor,
                     offset: messageBoxOffset,
-                    child: messageBox,
+                    child: contentBox,
                   ),
                   CompositedTransformFollower(
                     link: _layerLink,
