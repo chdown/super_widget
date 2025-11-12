@@ -105,7 +105,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   late final TooltipController _controller;
 
   final key = GlobalKey<State<StatefulWidget>>();
-  final messageBoxKey = GlobalKey<State<StatefulWidget>>();
+  final contentBoxKey = GlobalKey<State<StatefulWidget>>();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
 
@@ -167,7 +167,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
           maxWidth: MediaQuery.of(context).size.width - horizontalPadding,
         ),
         child: Container(
-          key: messageBoxKey,
+          key: contentBoxKey,
           child: widget.content,
         ),
       ),
@@ -189,15 +189,15 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     Overlay.of(context).insert(_overlayEntry!);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final messageBoxRenderBox = messageBoxKey.currentContext?.findRenderObject() as RenderBox?;
-      final messageBoxSize = messageBoxRenderBox?.size;
+      final contentBoxRenderBox = contentBoxKey.currentContext?.findRenderObject() as RenderBox?;
+      final contentBoxSize = contentBoxRenderBox?.size;
 
       _overlayEntry?.remove();
       _overlayEntry = null;
 
-      if (messageBoxSize == null) return;
+      if (contentBoxSize == null) return;
 
-      final builder = _builder(messageBoxSize);
+      final builder = _builder(contentBoxSize);
       if (builder == null) return;
 
       final Widget triangle = switch (builder.targetAnchor) {
@@ -233,7 +233,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
         _ => Offset.zero,
       };
 
-      final Offset messageBoxOffset = switch (builder.targetAnchor) {
+      final Offset contentBoxOffset = switch (builder.targetAnchor) {
         Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.triangleSize.height + (widget.targetPadding) - 1),
         Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.triangleSize.height - (widget.targetPadding) + 1),
         Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.targetPadding) - widget.triangleSize.width + 1, 0),
@@ -258,7 +258,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
                     link: _layerLink,
                     targetAnchor: builder.targetAnchor,
                     followerAnchor: builder.followerAnchor,
-                    offset: messageBoxOffset,
+                    offset: contentBoxOffset,
                     child: contentBox,
                   ),
                   CompositedTransformFollower(
@@ -305,7 +305,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   /// - targetAnchor: The anchor point on the target widget
   /// - followerAnchor: The anchor point on the tooltip
   /// - offset: Additional offset to prevent edge overflow
-  ({Alignment targetAnchor, Alignment followerAnchor, Offset offset})? _builder(Size messageBoxSize) {
+  ({Alignment targetAnchor, Alignment followerAnchor, Offset offset})? _builder(Size contentBoxSize) {
     final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
 
     if (renderBox == null) {
@@ -351,7 +351,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     };
 
     // Calculate horizontal overflow and edge distances
-    final double overflowWidth = (messageBoxSize.width - targetSize.width) / 2;
+    final double overflowWidth = (contentBoxSize.width - targetSize.width) / 2;
 
     final edgeFromLeft = targetPosition.dx - overflowWidth;
     final edgeFromRight = MediaQuery.of(context).size.width - (targetPosition.dx + targetSize.width + overflowWidth);
@@ -369,7 +369,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     }
 
     // Calculate vertical overflow and edge distances
-    final double overflowHeight = (messageBoxSize.height - targetSize.height) / 2;
+    final double overflowHeight = (contentBoxSize.height - targetSize.height) / 2;
 
     final edgeFromTop = targetPosition.dy - overflowHeight;
     final edgeFromBottom = MediaQuery.of(context).size.height - (targetPosition.dy + targetSize.height + overflowHeight);
