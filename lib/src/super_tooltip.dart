@@ -38,20 +38,20 @@ class SuperTooltip extends StatefulWidget {
     super.key,
     required this.content,
     required this.child,
-    this.triangleColor = Colors.black,
-    this.triangleSize = const Size(10, 10),
-    this.targetPadding = 4,
-    this.triangleRadius = 2,
-    this.onShow,
-    this.onDismiss,
+    this.arrowColor = Colors.black,
+    this.arrowSize = const Size(10, 10),
+    this.arrowSpacing = 4,
+    this.arrowRadius = 2,
+    this.onBeforeShow,
+    this.onAfterDismiss,
     this.controller,
-    this.padding = const EdgeInsets.all(16),
+    this.contentPadding = const EdgeInsets.all(16),
     this.axis = Axis.vertical,
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
-  })  : assert(targetPadding >= 0, 'targetPadding must be non-negative'),
-        assert(triangleRadius >= 0, 'triangleRadius must be non-negative');
+  })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative'),
+        assert(arrowRadius >= 0, 'arrowRadius must be non-negative');
 
   /// 消息内容
   final Widget content;
@@ -59,29 +59,29 @@ class SuperTooltip extends StatefulWidget {
   /// 目标组件
   final Widget child;
 
-  /// 三角形颜色
-  final Color triangleColor;
+  /// 箭头颜色
+  final Color arrowColor;
 
-  /// 三角形尺寸
-  final Size triangleSize;
+  /// 箭头尺寸
+  final Size arrowSize;
 
-  /// 目标与提示框之间的间距
-  final double targetPadding;
+  /// 箭头与目标之间的间距
+  final double arrowSpacing;
 
-  /// 三角形圆角
-  final double triangleRadius;
+  /// 箭头圆角
+  final double arrowRadius;
 
-  /// 显示回调
-  final VoidCallback? onShow;
+  /// 显示前回调
+  final VoidCallback? onBeforeShow;
 
-  /// 关闭回调
-  final VoidCallback? onDismiss;
+  /// 关闭后回调
+  final VoidCallback? onAfterDismiss;
 
   /// 提示框控制器
   final TooltipController? controller;
 
-  /// 消息框内边距
-  final EdgeInsetsGeometry padding;
+  /// 内容内边距
+  final EdgeInsetsGeometry contentPadding;
 
   /// 轴向
   final Axis axis;
@@ -159,7 +159,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   void show() {
     if (_animationController.isAnimating) return;
 
-    final resolvedPadding = widget.padding.resolve(TextDirection.ltr);
+    final resolvedPadding = widget.contentPadding.resolve(TextDirection.ltr);
     final horizontalPadding = resolvedPadding.left + resolvedPadding.right;
 
     final Widget contentBox = Material(
@@ -206,44 +206,44 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
         Alignment.bottomCenter => RotatedBox(
             quarterTurns: 2,
             child: CustomPaint(
-              painter: TrianglePainter(color: widget.triangleColor),
+              painter: TrianglePainter(color: widget.arrowColor),
             ),
           ),
         Alignment.topCenter => CustomPaint(
-            painter: TrianglePainter(color: widget.triangleColor),
+            painter: TrianglePainter(color: widget.arrowColor),
           ),
         Alignment.centerLeft => RotatedBox(
             quarterTurns: 3,
             child: CustomPaint(
-              painter: TrianglePainter(color: widget.triangleColor),
+              painter: TrianglePainter(color: widget.arrowColor),
             ),
           ),
         Alignment.centerRight => RotatedBox(
             quarterTurns: 1,
             child: CustomPaint(
-              painter: TrianglePainter(color: widget.triangleColor),
+              painter: TrianglePainter(color: widget.arrowColor),
             ),
           ),
         _ => const SizedBox.shrink(),
       };
 
       final Offset triangleOffset = switch (builder.targetAnchor) {
-        Alignment.bottomCenter => Offset(0, widget.targetPadding),
-        Alignment.topCenter => Offset(0, -(widget.targetPadding)),
-        Alignment.centerLeft => Offset(-(widget.targetPadding), 0),
-        Alignment.centerRight => Offset(widget.targetPadding, 0),
+        Alignment.bottomCenter => Offset(0, widget.arrowSpacing),
+        Alignment.topCenter => Offset(0, -(widget.arrowSpacing)),
+        Alignment.centerLeft => Offset(-(widget.arrowSpacing), 0),
+        Alignment.centerRight => Offset(widget.arrowSpacing, 0),
         _ => Offset.zero,
       };
 
       final Offset contentBoxOffset = switch (builder.targetAnchor) {
-        Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.triangleSize.height + (widget.targetPadding) - 1),
-        Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.triangleSize.height - (widget.targetPadding) + 1),
-        Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.targetPadding) - widget.triangleSize.width + 1, 0),
-        Alignment.centerRight when widget.offsetIgnore => Offset((widget.targetPadding) + widget.triangleSize.width - 1, 0),
-        Alignment.bottomCenter => Offset(builder.offset.dx, widget.triangleSize.height + (widget.targetPadding) - 1),
-        Alignment.topCenter => Offset(builder.offset.dx, -widget.triangleSize.height - (widget.targetPadding) + 1),
-        Alignment.centerLeft => Offset(-(widget.targetPadding) - widget.triangleSize.width + 1, builder.offset.dy),
-        Alignment.centerRight => Offset((widget.targetPadding) + widget.triangleSize.width - 1, builder.offset.dy),
+        Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
+        Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
+        Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
+        Alignment.centerRight when widget.offsetIgnore => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
+        Alignment.bottomCenter => Offset(builder.offset.dx, widget.arrowSize.height + (widget.arrowSpacing) - 1),
+        Alignment.topCenter => Offset(builder.offset.dx, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
+        Alignment.centerLeft => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, builder.offset.dy),
+        Alignment.centerRight => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, builder.offset.dy),
         _ => Offset.zero,
       };
 
@@ -267,7 +267,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
                   followerAnchor: builder.followerAnchor,
                   offset: Offset(triangleOffset.dx, triangleOffset.dy + builder.dyOffset),
                   child: SizedBox.fromSize(
-                    size: widget.triangleSize,
+                    size: widget.arrowSize,
                     child: triangle,
                   ),
                 ),
@@ -297,7 +297,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       _animationController.forward();
     });
 
-    widget.onShow?.call();
+    widget.onBeforeShow?.call();
   }
 
   Future<void> dismiss() async {
@@ -307,7 +307,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       _backgroundEntry?.remove();
       _overlayEntry = null;
       _backgroundEntry = null;
-      widget.onDismiss?.call();
+      widget.onAfterDismiss?.call();
     }
   }
 
@@ -376,11 +376,11 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     // 调整水平位置以防止边缘溢出
     double dx = 0;
 
-    if (edgeFromHorizontal < widget.padding.horizontal / 2) {
+    if (edgeFromHorizontal < widget.contentPadding.horizontal / 2) {
       if (targetInLeftHalf) {
-        dx = (widget.padding.horizontal / 2) - edgeFromHorizontal;
+        dx = (widget.contentPadding.horizontal / 2) - edgeFromHorizontal;
       } else if (targetInRightHalf) {
-        dx = -(widget.padding.horizontal / 2) + edgeFromHorizontal;
+        dx = -(widget.contentPadding.horizontal / 2) + edgeFromHorizontal;
       }
     }
 
@@ -394,11 +394,11 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     // 调整垂直位置以防止边缘溢出
     double dy = 0;
 
-    if (edgeFromVertical < widget.padding.vertical / 2) {
+    if (edgeFromVertical < widget.contentPadding.vertical / 2) {
       if (showTooltipBelow) {
-        dy = MediaQuery.of(context).padding.top + (widget.padding.vertical / 2) - edgeFromVertical;
+        dy = MediaQuery.of(context).padding.top + (widget.contentPadding.vertical / 2) - edgeFromVertical;
       } else if (showTooltipAbove) {
-        dy = MediaQuery.of(context).padding.bottom - (widget.padding.vertical / 2) + edgeFromVertical;
+        dy = MediaQuery.of(context).padding.bottom - (widget.contentPadding.vertical / 2) + edgeFromVertical;
       }
     }
 
