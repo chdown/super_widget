@@ -3,6 +3,8 @@ import 'package:example/super_popup_demo.dart';
 import 'package:example/super_popup_edge_test.dart';
 import 'package:example/super_text_filed_demo.dart' hide SuperInputDemo;
 import 'package:example/super_tooltip_test.dart';
+import 'package:example/super_tooltip_keyboard_test.dart';
+import 'package:example/super_tooltip_keyboard_scroll_test.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,8 @@ class MyApp extends StatelessWidget {
         '/super_popup': (context) => const SuperPopupDemo(),
         '/super_popup_edge': (context) => const SuperPopupEdgeTest(),
         '/super_tooltip_test': (context) => const SuperTooltipTest(),
+        '/super_tooltip_keyboard_test': (context) => const SuperTooltipKeyboardTest(),
+        '/super_tooltip_keyboard_scroll_test': (context) => const SuperTooltipKeyboardScrollTest(),
       },
     );
   }
@@ -112,6 +116,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.pushNamed(context, '/super_tooltip_test');
                 },
                 child: const Text('super_tooltip_test 边缘/全屏测试'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_tooltip_keyboard_test');
+                },
+                child: const Text('super_tooltip 键盘感知测试'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_tooltip_keyboard_scroll_test');
+                },
+                child: const Text('super_tooltip 键盘+滚动复杂场景'),
               ),
             ],
           ),

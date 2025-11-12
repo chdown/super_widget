@@ -120,7 +120,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   final contentBoxKey = GlobalKey<State<StatefulWidget>>();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
-  OverlayEntry? _backgroundEntry;  // 全屏背景 OverlayEntry
+  OverlayEntry? _backgroundEntry; // 全屏背景 OverlayEntry
 
   @override
   void initState() {
@@ -223,56 +223,57 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
 
       if (contentBoxSize == null) return;
 
-      final builder = _builder(contentBoxSize);
-      if (builder == null) return;
-
-      final Widget triangle = switch (builder.targetAnchor) {
-        Alignment.bottomCenter => RotatedBox(
-            quarterTurns: 2,
-            child: CustomPaint(
-              painter: TrianglePainter(color: widget.arrowColor),
-            ),
-          ),
-        Alignment.topCenter => CustomPaint(
-            painter: TrianglePainter(color: widget.arrowColor),
-          ),
-        Alignment.centerLeft => RotatedBox(
-            quarterTurns: 3,
-            child: CustomPaint(
-              painter: TrianglePainter(color: widget.arrowColor),
-            ),
-          ),
-        Alignment.centerRight => RotatedBox(
-            quarterTurns: 1,
-            child: CustomPaint(
-              painter: TrianglePainter(color: widget.arrowColor),
-            ),
-          ),
-        _ => const SizedBox.shrink(),
-      };
-
-      final Offset triangleOffset = switch (builder.targetAnchor) {
-        Alignment.bottomCenter => Offset(0, widget.arrowSpacing),
-        Alignment.topCenter => Offset(0, -(widget.arrowSpacing)),
-        Alignment.centerLeft => Offset(-(widget.arrowSpacing), 0),
-        Alignment.centerRight => Offset(widget.arrowSpacing, 0),
-        _ => Offset.zero,
-      };
-
-      final Offset contentBoxOffset = switch (builder.targetAnchor) {
-        Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
-        Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
-        Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
-        Alignment.centerRight when widget.offsetIgnore => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
-        Alignment.bottomCenter => Offset(builder.offset.dx, widget.arrowSize.height + (widget.arrowSpacing) - 1),
-        Alignment.topCenter => Offset(builder.offset.dx, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
-        Alignment.centerLeft => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, builder.offset.dy),
-        Alignment.centerRight => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, builder.offset.dy),
-        _ => Offset.zero,
-      };
-
       _overlayEntry = OverlayEntry(
         builder: (context) {
+          double keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
+          final builder = _builder(contentBoxSize, keyboardHeight);
+          if (builder == null) return const SizedBox();
+
+          final Widget triangle = switch (builder.targetAnchor) {
+            Alignment.bottomCenter => RotatedBox(
+                quarterTurns: 2,
+                child: CustomPaint(
+                  painter: TrianglePainter(color: widget.arrowColor),
+                ),
+              ),
+            Alignment.topCenter => CustomPaint(
+                painter: TrianglePainter(color: widget.arrowColor),
+              ),
+            Alignment.centerLeft => RotatedBox(
+                quarterTurns: 3,
+                child: CustomPaint(
+                  painter: TrianglePainter(color: widget.arrowColor),
+                ),
+              ),
+            Alignment.centerRight => RotatedBox(
+                quarterTurns: 1,
+                child: CustomPaint(
+                  painter: TrianglePainter(color: widget.arrowColor),
+                ),
+              ),
+            _ => const SizedBox.shrink(),
+          };
+
+          final Offset triangleOffset = switch (builder.targetAnchor) {
+            Alignment.bottomCenter => Offset(0, widget.arrowSpacing),
+            Alignment.topCenter => Offset(0, -(widget.arrowSpacing)),
+            Alignment.centerLeft => Offset(-(widget.arrowSpacing), 0),
+            Alignment.centerRight => Offset(widget.arrowSpacing, 0),
+            _ => Offset.zero,
+          };
+
+          final Offset contentBoxOffset = switch (builder.targetAnchor) {
+            Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
+            Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
+            Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
+            Alignment.centerRight when widget.offsetIgnore => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
+            Alignment.bottomCenter => Offset(builder.offset.dx, widget.arrowSize.height + (widget.arrowSpacing) - 1),
+            Alignment.topCenter => Offset(builder.offset.dx, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
+            Alignment.centerLeft => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, builder.offset.dy),
+            Alignment.centerRight => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, builder.offset.dy),
+            _ => Offset.zero,
+          };
+
           return FadeTransition(
             opacity: _animation,
             child: Stack(
@@ -347,7 +348,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   /// - followerAnchor: 提示框上的锚点
   /// - offset: 防止边缘溢出的额外偏移
   /// - dyOffset: 当空间不足时居中显示的额外 Y 轴偏移
-  ({Alignment targetAnchor, Alignment followerAnchor, Offset offset, double dyOffset})? _builder(Size contentBoxSize) {
+  ({Alignment targetAnchor, Alignment followerAnchor, Offset offset, double dyOffset})? _builder(Size contentBoxSize, double keyboardHeight) {
     final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
 
     if (renderBox == null) {
@@ -359,25 +360,29 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final targetPosition = renderBox.localToGlobal(Offset.zero);
     final targetCenterPosition = Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
 
+    // 计算可用的屏幕高度（减去键盘高度）
+    final screenHeight = MediaQuery.of(context).size.height;
+    final availableScreenHeight = screenHeight - keyboardHeight;
+
     // 判断提示框应该显示在目标下方还是上方
     // 当目标在上半部分时，提示框显示在下方；当目标在下半部分时，提示框显示在上方
     final bool showTooltipBelow = switch (widget.position) {
-      TooltipPosition.top => false,      // 强制显示在上方
-      TooltipPosition.bottom => true,    // 强制显示在下方
-      _ => targetCenterPosition.dy <= MediaQuery.of(context).size.height / 2,  // 自动：上半部分 -> 下方
+      TooltipPosition.top => false, // 强制显示在上方
+      TooltipPosition.bottom => true, // 强制显示在下方
+      _ => targetCenterPosition.dy <= availableScreenHeight / 2, // 自动：考虑键盘后，上半部分 -> 下方
     };
 
     // 根据位置确定锚点
     Alignment targetAnchor = switch (widget.position) {
-      TooltipPosition.top => Alignment.topCenter,     // 锚点在目标顶部，提示框在上方
-      TooltipPosition.bottom => Alignment.bottomCenter,  // 锚点在目标底部，提示框在下方
-      _ => showTooltipBelow ? Alignment.bottomCenter : Alignment.topCenter,  // 自动
+      TooltipPosition.top => Alignment.topCenter, // 锚点在目标顶部，提示框在上方
+      TooltipPosition.bottom => Alignment.bottomCenter, // 锚点在目标底部，提示框在下方
+      _ => showTooltipBelow ? Alignment.bottomCenter : Alignment.topCenter, // 自动
     };
 
     Alignment followerAnchor = switch (widget.position) {
-      TooltipPosition.top => Alignment.bottomCenter,  // 提示框的底部对齐目标的顶部
-      TooltipPosition.bottom => Alignment.topCenter,     // 提示框的顶部对齐目标的底部
-      _ => showTooltipBelow ? Alignment.topCenter : Alignment.bottomCenter,  // 自动
+      TooltipPosition.top => Alignment.bottomCenter, // 提示框的底部对齐目标的顶部
+      TooltipPosition.bottom => Alignment.topCenter, // 提示框的顶部对齐目标的底部
+      _ => showTooltipBelow ? Alignment.topCenter : Alignment.bottomCenter, // 自动
     };
 
     // 计算水平溢出和边缘距离
@@ -401,11 +406,11 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       }
     }
 
-    // 计算垂直溢出和边缘距离
+    // 计算垂直溢出和边缘距离（考虑键盘高度）
     final double overflowHeight = (contentBoxSize.height - targetSize.height) / 2;
 
     final edgeFromTop = targetPosition.dy - overflowHeight;
-    final edgeFromBottom = MediaQuery.of(context).size.height - (targetPosition.dy + targetSize.height + overflowHeight);
+    final edgeFromBottom = availableScreenHeight - (targetPosition.dy + targetSize.height + overflowHeight);
     final edgeFromVertical = min(edgeFromTop, edgeFromBottom);
 
     // 调整垂直位置以防止边缘溢出
@@ -421,8 +426,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
 
     // 额外逻辑：将提示框定位在目标组件可见区域的 Y 轴中心
     // 当目标组件在可滚动容器中且可能部分不在屏幕内时，这个功能很有用
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenFifth = screenHeight / 5;
+    final screenFifth = availableScreenHeight / 5;
     double dyOffset = 0;
 
     final targetBottom = targetPosition.dy + targetSize.height;
@@ -435,7 +439,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       if (needsCorrection) {
         // 第二步：计算目标在屏幕上的可见区域并找到其中心
         final visibleTop = max(0.0, targetPosition.dy);
-        final visibleBottom = min(screenHeight, targetBottom);
+        final visibleBottom = min(availableScreenHeight, targetBottom);
         final visibleHeight = visibleBottom - visibleTop;
 
         // 计算偏移量，将提示框定位在可见区域中心
@@ -446,13 +450,13 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     } else if (targetAnchor == Alignment.bottomCenter) {
       // 提示框将显示在目标下方（锚点在目标底部）
       // 第一步：检查是否需要纠正 - 目标底部距离屏幕底部较近（< 1/5）
-      final distanceToBottom = screenHeight - targetBottom;
+      final distanceToBottom = availableScreenHeight - targetBottom;
       final needsCorrection = distanceToBottom < screenFifth;
 
       if (needsCorrection) {
         // 第二步：计算目标在屏幕上的可见区域并找到其中心
         final visibleTop = max(0.0, targetPosition.dy);
-        final visibleBottom = min(screenHeight, targetBottom);
+        final visibleBottom = min(availableScreenHeight, targetBottom);
         final visibleHeight = visibleBottom - visibleTop;
 
         // 计算偏移量，将提示框定位在可见区域中心

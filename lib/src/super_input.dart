@@ -25,6 +25,9 @@ class SuperInput extends StatefulWidget {
   /// 文本大小
   final double? fontSize;
 
+  /// 文本样式
+  final TextStyle? textStyle;
+
   /// 文本对齐方式
   final TextAlign textAlign;
 
@@ -137,6 +140,12 @@ class SuperInput extends StatefulWidget {
   /// 提示文本大小
   final double? hintFontSize;
 
+  /// 提示文本样式
+  final TextStyle? hintTextStyle;
+
+  /// 提示文本夯实
+  final int? hintMaxLines;
+
   // ========== 标签 ==========
   /// 标签组件
   final Widget? label;
@@ -209,6 +218,7 @@ class SuperInput extends StatefulWidget {
     // 文本样式
     this.color,
     this.fontSize = 14,
+    this.textStyle,
     this.textAlign = TextAlign.start,
     this.textCapitalization = TextCapitalization.none,
     // 焦点相关
@@ -252,6 +262,8 @@ class SuperInput extends StatefulWidget {
     this.hintText,
     this.hintFontColor = const Color(0xFF999999),
     this.hintFontSize,
+    this.hintTextStyle,
+    this.hintMaxLines,
     // 标签
     this.label,
     this.labelText,
@@ -375,7 +387,9 @@ class _SuperInputState extends State<SuperInput> {
     return TextField(
       controller: _textController,
       cursorWidth: 1,
-      style: TextStyle(color: widget.color, fontSize: widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
+      style: widget.textStyle != null
+          ? widget.textStyle?.copyWith(color: widget.color, fontSize: widget.fontSize)
+          : TextStyle(color: widget.color, fontSize: widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
       keyboardType: textInputType,
       textCapitalization: widget.textCapitalization,
       textInputAction: widget.textInputAction,
@@ -407,7 +421,10 @@ class _SuperInputState extends State<SuperInput> {
         isDense: widget.isDense,
         label: widget.label,
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
+        hintStyle: widget.hintTextStyle != null
+            ? widget.textStyle?.copyWith(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize)
+            : TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
+        hintMaxLines: widget.hintMaxLines,
         fillColor: widget.fillColor,
         filled: widget.fillColor != null,
         contentPadding: widget.contentPadding,
