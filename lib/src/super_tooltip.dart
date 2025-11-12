@@ -108,6 +108,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   final contentBoxKey = GlobalKey<State<StatefulWidget>>();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
+  OverlayEntry? _backgroundEntry;  // 全屏背景 OverlayEntry
 
   @override
   void initState() {
@@ -128,6 +129,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     }
 
     _overlayEntry?.remove();
+    _backgroundEntry?.remove();
     _animationController.dispose();
 
     super.dispose();
@@ -249,35 +251,47 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
         builder: (context) {
           return FadeTransition(
             opacity: _animation,
-            child: TapRegion(
-              onTapOutside: _controller.dismiss,
-              child: Stack(
-                children: [
-                  const SizedBox.expand(),
-                  CompositedTransformFollower(
-                    link: _layerLink,
-                    targetAnchor: builder.targetAnchor,
-                    followerAnchor: builder.followerAnchor,
-                    offset: Offset(contentBoxOffset.dx, contentBoxOffset.dy + builder.dyOffset),
-                    child: contentBox,
+            child: Stack(
+              children: [
+                const SizedBox.expand(),
+                CompositedTransformFollower(
+                  link: _layerLink,
+                  targetAnchor: builder.targetAnchor,
+                  followerAnchor: builder.followerAnchor,
+                  offset: Offset(contentBoxOffset.dx, contentBoxOffset.dy + builder.dyOffset),
+                  child: contentBox,
+                ),
+                CompositedTransformFollower(
+                  link: _layerLink,
+                  targetAnchor: builder.targetAnchor,
+                  followerAnchor: builder.followerAnchor,
+                  offset: Offset(triangleOffset.dx, triangleOffset.dy + builder.dyOffset),
+                  child: SizedBox.fromSize(
+                    size: widget.triangleSize,
+                    child: triangle,
                   ),
-                  CompositedTransformFollower(
-                    link: _layerLink,
-                    targetAnchor: builder.targetAnchor,
-                    followerAnchor: builder.followerAnchor,
-                    offset: Offset(triangleOffset.dx, triangleOffset.dy + builder.dyOffset),
-                    child: SizedBox.fromSize(
-                      size: widget.triangleSize,
-                      child: triangle,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
       );
 
+      // 插入全屏背景 OverlayEntry，用于点击关闭
+      _backgroundEntry = OverlayEntry(
+        builder: (context) {
+          return FadeTransition(
+            opacity: _animation,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _controller.dismiss,
+              child: const SizedBox.expand(),
+            ),
+          );
+        },
+      );
+
+      Overlay.of(context).insert(_backgroundEntry!);
       Overlay.of(context).insert(_overlayEntry!);
 
       _animationController.forward();
@@ -290,7 +304,9 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     if (_overlayEntry != null) {
       await _animationController.reverse();
       _overlayEntry?.remove();
+      _backgroundEntry?.remove();
       _overlayEntry = null;
+      _backgroundEntry = null;
       widget.onDismiss?.call();
     }
   }
