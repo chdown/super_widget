@@ -65,7 +65,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             top: 16,
             child: SuperTooltip(
               controller: _controller1,
-              message: _buildTooltipMessage('左上角', 'Tooltip 应该向下或向右显示'),
+              content: _buildTooltipMessage('左上角', 'Tooltip 应该向下或向右显示'),
               position: TooltipPosition.bottom,
               onShow: () => setState(() => _lastAction = '左上角 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '左上角 Tooltip 关闭'),
@@ -79,7 +79,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             top: 16,
             child: SuperTooltip(
               controller: _controller2,
-              message: _buildTooltipMessage('右上角', 'Tooltip 应该向下或向左显示'),
+              content: _buildTooltipMessage('右上角', 'Tooltip 应该向下或向左显示'),
               position: TooltipPosition.bottom,
               onShow: () => setState(() => _lastAction = '右上角 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '右上角 Tooltip 关闭'),
@@ -93,7 +93,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             bottom: 100,
             child: SuperTooltip(
               controller: _controller3,
-              message: _buildTooltipMessage('左下角', 'Tooltip 应该向上或向右显示'),
+              content: _buildTooltipMessage('左下角', 'Tooltip 应该向上或向右显示'),
               position: TooltipPosition.top,
               onShow: () => setState(() => _lastAction = '左下角 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '左下角 Tooltip 关闭'),
@@ -107,7 +107,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             bottom: 250,
             child: SuperTooltip(
               controller: _controller4,
-              message: _buildTooltipMessage('右下角', 'Tooltip 应该向上或向左显示'),
+              content: _buildTooltipMessage('右下角', 'Tooltip 应该向上或向左显示'),
               position: TooltipPosition.top,
               onShow: () => setState(() => _lastAction = '右下角 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '右下角 Tooltip 关闭'),
@@ -130,7 +130,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
 
                 // 中心 Tooltip - 点击触发
                 SuperTooltip(
-                  message: _buildTooltipMessage('中心 Tooltip', '在屏幕中央，可以向任意方向显示\n点击触发'),
+                  content: _buildTooltipMessage('中心 Tooltip', '在屏幕中央，可以向任意方向显示\n点击触发'),
                   position: TooltipPosition.auto,
                   onShow: () => setState(() => _lastAction = '中心 Tooltip 显示（点击）'),
                   onDismiss: () => setState(() => _lastAction = '中心 Tooltip 关闭'),
@@ -141,11 +141,10 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
                 // 长按触发的 Tooltip
                 SuperTooltip(
                   controller: _centerLongPressController,
-                  message: _buildTooltipMessage('长按 Tooltip', '长按触发显示'),
+                  content: _buildTooltipMessage('长按 Tooltip', '长按触发显示'),
                   isLongPress: true,
                   position: TooltipPosition.auto,
                   triangleColor: Colors.indigo,
-                  messageDecoration: const BoxDecoration(color: Colors.indigo, borderRadius: BorderRadius.all(Radius.circular(8))),
                   onShow: () => setState(() => _lastAction = '长按 Tooltip 显示'),
                   onDismiss: () => setState(() => _lastAction = '长按 Tooltip 关闭'),
                   child: ElevatedButton.icon(
@@ -185,7 +184,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             left: size.width / 2 - 50,
             top: 16,
             child: SuperTooltip(
-              message: _buildTooltipMessage('顶部中心', 'Tooltip 应该向下显示'),
+              content: _buildTooltipMessage('顶部中心', 'Tooltip 应该向下显示'),
               position: TooltipPosition.bottom,
               onShow: () => setState(() => _lastAction = '顶部中心 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '顶部中心 Tooltip 关闭'),
@@ -198,7 +197,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             left: size.width / 2 - 50,
             bottom: 100,
             child: SuperTooltip(
-              message: _buildTooltipMessage('底部中心', 'Tooltip 应该向上显示'),
+              content: _buildTooltipMessage('底部中心', 'Tooltip 应该向上显示'),
               position: TooltipPosition.top,
               onShow: () => setState(() => _lastAction = '底部中心 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '底部中心 Tooltip 关闭'),
@@ -211,7 +210,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             left: 16,
             top: size.height / 2 - 70,
             child: SuperTooltip(
-              message: _buildTooltipMessage('左侧中心', 'Tooltip 自动定位'),
+              content: _buildTooltipMessage('左侧中心', 'Tooltip 自动定位'),
               position: TooltipPosition.auto,
               onShow: () => setState(() => _lastAction = '左侧中心 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '左侧中心 Tooltip 关闭'),
@@ -224,7 +223,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
             right: 16,
             top: size.height / 2 - 70,
             child: SuperTooltip(
-              message: _buildTooltipMessage('右侧中心', 'Tooltip 自动定位'),
+              content: _buildTooltipMessage('右侧中心', 'Tooltip 自动定位'),
               position: TooltipPosition.auto,
               onShow: () => setState(() => _lastAction = '右侧中心 Tooltip 显示'),
               onDismiss: () => setState(() => _lastAction = '右侧中心 Tooltip 关闭'),
@@ -267,22 +266,26 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
   }
 
   Widget _buildTooltipMessage(String title, String description) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
-        ),
-        const SizedBox(height: 8),
-        Text(description, style: const TextStyle(fontSize: 14, color: Colors.white)),
-        const SizedBox(height: 8),
-        Text(
-          '屏幕: ${MediaQuery.of(context).size.width.toInt()} x ${MediaQuery.of(context).size.height.toInt()}',
-          style: const TextStyle(fontSize: 11, color: Colors.white70),
-        ),
-      ],
+    return Container(
+      decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)),
+      padding: EdgeInsets.all(10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          Text(description, style: const TextStyle(fontSize: 14, color: Colors.white)),
+          const SizedBox(height: 8),
+          Text(
+            '屏幕: ${MediaQuery.of(context).size.width.toInt()} x ${MediaQuery.of(context).size.height.toInt()}',
+            style: const TextStyle(fontSize: 11, color: Colors.white70),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -412,21 +415,24 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
             const Text('这个页面模拟真实场景：\n• 长列表内容\n• 不同位置的 Tooltip\n• 滚动时 Tooltip 行为', style: TextStyle(color: Colors.white70, fontSize: 14)),
             const SizedBox(height: 16),
             SuperTooltip(
-              message: const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '顶部 Tooltip',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
-                  ),
-                  SizedBox(height: 8),
-                  Text('这个按钮在列表顶部\nTooltip 应该向下显示', style: TextStyle(fontSize: 14, color: Colors.black87)),
-                ],
+              content: Container(
+                decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)),
+                padding: EdgeInsets.all(10),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '顶部 Tooltip',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+                    ),
+                    SizedBox(height: 8),
+                    Text('这个按钮在列表顶部\nTooltip 应该向下显示', style: TextStyle(fontSize: 14, color: Colors.black87)),
+                  ],
+                ),
               ),
               position: TooltipPosition.bottom,
               triangleColor: Colors.white,
-              messageDecoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(8))),
               child: ElevatedButton.icon(
                 onPressed: null,
                 icon: const Icon(Icons.touch_app),
@@ -461,21 +467,24 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
             const Text('测试底部元素的 Tooltip 表现', style: TextStyle(color: Colors.white70, fontSize: 14)),
             const SizedBox(height: 16),
             SuperTooltip(
-              message: const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '底部 Tooltip',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
-                  ),
-                  SizedBox(height: 8),
-                  Text('这个按钮在列表底部\nTooltip 应该向上显示\n避免超出屏幕', style: TextStyle(fontSize: 14, color: Colors.black87)),
-                ],
+              content: Container(
+                decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)),
+                padding: EdgeInsets.all(10),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '底部 Tooltip',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+                    ),
+                    SizedBox(height: 8),
+                    Text('这个按钮在列表底部\nTooltip 应该向上显示\n避免超出屏幕', style: TextStyle(fontSize: 14, color: Colors.black87)),
+                  ],
+                ),
               ),
               position: TooltipPosition.top,
               triangleColor: Colors.white,
-              messageDecoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(8))),
               child: ElevatedButton.icon(
                 onPressed: null,
                 icon: const Icon(Icons.touch_app),
@@ -509,12 +518,9 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
             ),
           ),
           SuperTooltip(
-            message: Text('组 ${(index ~/ 10) + 1} 的信息', style: const TextStyle(color: Colors.white)),
+            content: Text('组 ${(index ~/ 10) + 1} 的信息', style: const TextStyle(color: Colors.white)),
             position: TooltipPosition.auto,
-            child: IconButton(
-              icon: Icon(Icons.info_outline, color: Colors.blue.shade400),
-              onPressed: null,
-            ),
+            child: IconButton(icon: Icon(Icons.info_outline, color: Colors.blue.shade400), onPressed: null),
           ),
         ],
       ),
@@ -523,13 +529,17 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
 
   Widget _buildComplexItem(int index) {
     return SuperTooltip(
-      message: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.share, color: Colors.white, size: 32),
-          const SizedBox(height: 8),
-          Text('分享项目 #$index', style: const TextStyle(color: Colors.white)),
-        ],
+      content: Container(
+        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.share, color: Colors.white, size: 32),
+            const SizedBox(height: 8),
+            Text('分享项目 #$index', style: const TextStyle(color: Colors.white)),
+          ],
+        ),
       ),
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
@@ -556,7 +566,7 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
                     Row(
                       children: [
                         SuperTooltip(
-                          message: Column(
+                          content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.share, color: Colors.white, size: 32),
@@ -566,7 +576,6 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
                           ),
                           position: TooltipPosition.auto,
                           triangleColor: Colors.green,
-                          messageDecoration: const BoxDecoration(color: Colors.green, borderRadius: BorderRadius.all(Radius.circular(8))),
                           child: TextButton.icon(onPressed: null, icon: const Icon(Icons.share, size: 16), label: const Text('分享')),
                         ),
                         const SizedBox(width: 8),
@@ -600,16 +609,20 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SuperTooltip(
-              message: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '项目 #$index 详情',
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text('这是一个简单的 Tooltip 提示', style: TextStyle(fontSize: 12, color: Colors.white)),
-                ],
+              content: Container(
+                decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)),
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '项目 #$index 详情',
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text('这是一个简单的 Tooltip 提示', style: TextStyle(fontSize: 12, color: Colors.white)),
+                  ],
+                ),
               ),
               position: TooltipPosition.auto,
               child: IconButton(icon: const Icon(Icons.more_vert), onPressed: null),

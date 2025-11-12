@@ -36,7 +36,7 @@ class TooltipController extends ChangeNotifier {
 class SuperTooltip extends StatefulWidget {
   const SuperTooltip({
     super.key,
-    required this.message,
+    required this.content,
     required this.child,
     this.triangleColor = Colors.black,
     this.triangleSize = const Size(10, 10),
@@ -45,9 +45,6 @@ class SuperTooltip extends StatefulWidget {
     this.onShow,
     this.onDismiss,
     this.controller,
-    this.messagePadding = const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-    this.messageDecoration = const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(8))),
-    this.messageStyle = const TextStyle(color: Colors.white, fontSize: 14),
     this.padding = const EdgeInsets.all(16),
     this.axis = Axis.vertical,
     this.isLongPress = false,
@@ -57,7 +54,7 @@ class SuperTooltip extends StatefulWidget {
         assert(triangleRadius >= 0, 'triangleRadius must be non-negative');
 
   /// Message
-  final Widget message;
+  final Widget content;
 
   /// Target Widget
   final Widget child;
@@ -82,15 +79,6 @@ class SuperTooltip extends StatefulWidget {
 
   /// Tooltip Controller
   final TooltipController? controller;
-
-  /// Message Box padding
-  final EdgeInsetsGeometry messagePadding;
-
-  /// Message Box decoration
-  final BoxDecoration messageDecoration;
-
-  /// Message Box text style
-  final TextStyle? messageStyle;
 
   /// Message Box padding
   final EdgeInsetsGeometry padding;
@@ -180,9 +168,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
         ),
         child: Container(
           key: messageBoxKey,
-          padding: widget.messagePadding,
-          decoration: widget.messageDecoration,
-          child: widget.message,
+          child: widget.content,
         ),
       ),
     );
