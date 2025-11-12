@@ -143,6 +143,9 @@ class SuperInput extends StatefulWidget {
   /// 提示文本样式
   final TextStyle? hintTextStyle;
 
+  /// 提示文本夯实
+  final int? hintMaxLines;
+
   // ========== 标签 ==========
   /// 标签组件
   final Widget? label;
@@ -260,6 +263,7 @@ class SuperInput extends StatefulWidget {
     this.hintFontColor = const Color(0xFF999999),
     this.hintFontSize,
     this.hintTextStyle,
+    this.hintMaxLines,
     // 标签
     this.label,
     this.labelText,
@@ -383,7 +387,9 @@ class _SuperInputState extends State<SuperInput> {
     return TextField(
       controller: _textController,
       cursorWidth: 1,
-      style: widget.textStyle ?? TextStyle(color: widget.color, fontSize: widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
+      style: widget.textStyle != null
+          ? widget.textStyle?.copyWith(color: widget.color, fontSize: widget.fontSize)
+          : TextStyle(color: widget.color, fontSize: widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
       keyboardType: textInputType,
       textCapitalization: widget.textCapitalization,
       textInputAction: widget.textInputAction,
@@ -415,7 +421,10 @@ class _SuperInputState extends State<SuperInput> {
         isDense: widget.isDense,
         label: widget.label,
         hintText: widget.hintText,
-        hintStyle: widget.hintTextStyle ?? TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
+        hintStyle: widget.hintTextStyle != null
+            ? widget.textStyle?.copyWith(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize)
+            : TextStyle(color: widget.hintFontColor, fontSize: widget.hintFontSize ?? widget.fontSize ?? SuperWidgetConfig.defaultTextSize),
+        hintMaxLines: widget.hintMaxLines,
         fillColor: widget.fillColor,
         filled: widget.fillColor != null,
         contentPadding: widget.contentPadding,

@@ -360,12 +360,16 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final targetPosition = renderBox.localToGlobal(Offset.zero);
     final targetCenterPosition = Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
 
+    // 计算可用的屏幕高度（减去键盘高度）
+    final screenHeight = MediaQuery.of(context).size.height;
+    final availableScreenHeight = screenHeight - keyboardHeight;
+
     // 判断提示框应该显示在目标下方还是上方
     // 当目标在上半部分时，提示框显示在下方；当目标在下半部分时，提示框显示在上方
     final bool showTooltipBelow = switch (widget.position) {
       TooltipPosition.top => false, // 强制显示在上方
       TooltipPosition.bottom => true, // 强制显示在下方
-      _ => targetCenterPosition.dy <= MediaQuery.of(context).size.height / 2, // 自动：上半部分 -> 下方
+      _ => targetCenterPosition.dy <= availableScreenHeight / 2, // 自动：考虑键盘后，上半部分 -> 下方
     };
 
     // 根据位置确定锚点
@@ -402,11 +406,11 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       }
     }
 
-    // 计算垂直溢出和边缘距离
+    // 计算垂直溢出和边缘距离（考虑键盘高度）
     final double overflowHeight = (contentBoxSize.height - targetSize.height) / 2;
 
     final edgeFromTop = targetPosition.dy - overflowHeight;
-    final edgeFromBottom = MediaQuery.of(context).size.height - (targetPosition.dy + targetSize.height + overflowHeight);
+    final edgeFromBottom = availableScreenHeight - (targetPosition.dy + targetSize.height + overflowHeight);
     final edgeFromVertical = min(edgeFromTop, edgeFromBottom);
 
     // 调整垂直位置以防止边缘溢出
@@ -422,8 +426,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
 
     // 额外逻辑：将提示框定位在目标组件可见区域的 Y 轴中心
     // 当目标组件在可滚动容器中且可能部分不在屏幕内时，这个功能很有用
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenFifth = screenHeight / 5;
+    final screenFifth = availableScreenHeight / 5;
     double dyOffset = 0;
 
     final targetBottom = targetPosition.dy + targetSize.height;
@@ -436,7 +439,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       if (needsCorrection) {
         // 第二步：计算目标在屏幕上的可见区域并找到其中心
         final visibleTop = max(0.0, targetPosition.dy);
-        final visibleBottom = min(screenHeight, targetBottom);
+        final visibleBottom = min(availableScreenHeight, targetBottom);
         final visibleHeight = visibleBottom - visibleTop;
 
         // 计算偏移量，将提示框定位在可见区域中心
@@ -447,13 +450,13 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     } else if (targetAnchor == Alignment.bottomCenter) {
       // 提示框将显示在目标下方（锚点在目标底部）
       // 第一步：检查是否需要纠正 - 目标底部距离屏幕底部较近（< 1/5）
-      final distanceToBottom = screenHeight - targetBottom;
+      final distanceToBottom = availableScreenHeight - targetBottom;
       final needsCorrection = distanceToBottom < screenFifth;
 
       if (needsCorrection) {
         // 第二步：计算目标在屏幕上的可见区域并找到其中心
         final visibleTop = max(0.0, targetPosition.dy);
-        final visibleBottom = min(screenHeight, targetBottom);
+        final visibleBottom = min(availableScreenHeight, targetBottom);
         final visibleHeight = visibleBottom - visibleTop;
 
         // 计算偏移量，将提示框定位在可见区域中心
