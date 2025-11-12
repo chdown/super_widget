@@ -158,6 +158,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     return CompositedTransformTarget(
       link: _layerLink,
       child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: widget.isLongPress ? null : _controller.toggle,
         onLongPress: !widget.isLongPress ? null : _controller.toggle,
         child: SizedBox(key: key, child: widget.child),

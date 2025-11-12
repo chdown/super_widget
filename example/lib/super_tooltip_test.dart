@@ -15,6 +15,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
   final TooltipController _controller2 = TooltipController();
   final TooltipController _controller3 = TooltipController();
   final TooltipController _controller4 = TooltipController();
+  final TooltipController _centerLongPressController = TooltipController();
 
   @override
   void dispose() {
@@ -22,6 +23,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
     _controller2.dispose();
     _controller3.dispose();
     _controller4.dispose();
+    _centerLongPressController.dispose();
     super.dispose();
   }
 
@@ -132,12 +134,13 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
                   position: TooltipPosition.auto,
                   onShow: () => setState(() => _lastAction = '中心 Tooltip 显示（点击）'),
                   onDismiss: () => setState(() => _lastAction = '中心 Tooltip 关闭'),
-                  child: SuperText("'中心位置（点击）"),
+                  child: SuperText('中心位置（点击）'),
                 ),
                 const SizedBox(height: 16),
 
                 // 长按触发的 Tooltip
                 SuperTooltip(
+                  controller: _centerLongPressController,
                   message: _buildTooltipMessage('长按 Tooltip', '长按触发显示'),
                   isLongPress: true,
                   position: TooltipPosition.auto,
@@ -147,6 +150,7 @@ class _SuperTooltipTestState extends State<SuperTooltipTest> {
                   onDismiss: () => setState(() => _lastAction = '长按 Tooltip 关闭'),
                   child: ElevatedButton.icon(
                     onPressed: () {},
+                    onLongPress: _centerLongPressController.toggle,
                     icon: const Icon(Icons.touch_app),
                     label: const Text('长按触发'),
                     style: ElevatedButton.styleFrom(
@@ -424,7 +428,7 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
               triangleColor: Colors.white,
               messageDecoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(8))),
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: null,
                 icon: const Icon(Icons.touch_app),
                 label: const Text('点击测试顶部 Tooltip'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.purple),
@@ -473,7 +477,7 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
               triangleColor: Colors.white,
               messageDecoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(8))),
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: null,
                 icon: const Icon(Icons.touch_app),
                 label: const Text('点击测试底部 Tooltip'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.orange),
@@ -509,7 +513,7 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
             position: TooltipPosition.auto,
             child: IconButton(
               icon: Icon(Icons.info_outline, color: Colors.blue.shade400),
-              onPressed: () {},
+              onPressed: null,
             ),
           ),
         ],
@@ -518,51 +522,61 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
   }
 
   Widget _buildComplexItem(int index) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(color: Colors.primaries[index % Colors.primaries.length].shade100, borderRadius: BorderRadius.circular(8)),
-              child: Icon(Icons.image, color: Colors.primaries[index % Colors.primaries.length], size: 30),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('复杂项目 #$index', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const SizedBox(height: 800),
-                  Text('这是一个包含更多内容的列表项\n测试在复杂布局中的 Tooltip 表现', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      SuperTooltip(
-                        message: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.share, color: Colors.white, size: 32),
-                            const SizedBox(height: 8),
-                            Text('分享项目 #$index', style: const TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        position: TooltipPosition.auto,
-                        triangleColor: Colors.green,
-                        messageDecoration: const BoxDecoration(color: Colors.green, borderRadius: BorderRadius.all(Radius.circular(8))),
-                        child: TextButton.icon(onPressed: () {}, icon: const Icon(Icons.share, size: 16), label: const Text('分享')),
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
+    return SuperTooltip(
+      message: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.share, color: Colors.white, size: 32),
+          const SizedBox(height: 8),
+          Text('分享项目 #$index', style: const TextStyle(color: Colors.white)),
+        ],
+      ),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(color: Colors.primaries[index % Colors.primaries.length].shade100, borderRadius: BorderRadius.circular(8)),
+                child: Icon(Icons.image, color: Colors.primaries[index % Colors.primaries.length], size: 30),
               ),
-            ),
-          ],
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('复杂项目 #$index', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 800),
+                    Text('这是一个包含更多内容的列表项\n测试在复杂布局中的 Tooltip 表现', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        SuperTooltip(
+                          message: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.share, color: Colors.white, size: 32),
+                              const SizedBox(height: 8),
+                              Text('分享项目 #$index', style: const TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                          position: TooltipPosition.auto,
+                          triangleColor: Colors.green,
+                          messageDecoration: const BoxDecoration(color: Colors.green, borderRadius: BorderRadius.all(Radius.circular(8))),
+                          child: TextButton.icon(onPressed: null, icon: const Icon(Icons.share, size: 16), label: const Text('分享')),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -598,7 +612,7 @@ class _ScrollableTooltipTestState extends State<ScrollableTooltipTest> {
                 ],
               ),
               position: TooltipPosition.auto,
-              child: IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+              child: IconButton(icon: const Icon(Icons.more_vert), onPressed: null),
             ),
           ],
         ),
