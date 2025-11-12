@@ -2,6 +2,7 @@ import 'package:example/super_input_demo.dart';
 import 'package:example/super_popup_demo.dart';
 import 'package:example/super_popup_edge_test.dart';
 import 'package:example/super_text_filed_demo.dart' hide SuperInputDemo;
+import 'package:example/super_tooltip_test.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/super_text_filed': (context) => const SuperTextFiledDemo(),
         '/super_popup': (context) => const SuperPopupDemo(),
         '/super_popup_edge': (context) => const SuperPopupEdgeTest(),
+        '/super_tooltip_test': (context) => const SuperTooltipTest(),
       },
     );
   }
@@ -103,7 +105,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/super_popup_edge');
                 },
-                child: const Text('Popup 边缘/全屏测试'),
+                child: const Text('super_popup_edge 边缘/全屏测试'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/super_tooltip_test');
+                },
+                child: const Text('super_tooltip_test 边缘/全屏测试'),
               ),
             ],
           ),
