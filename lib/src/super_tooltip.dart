@@ -53,8 +53,7 @@ class SuperTooltip extends StatefulWidget {
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
-  })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative'),
-        assert(content == null || contentBuilder == null, 'content or contentBuilder must set one');
+  }) : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative');
 
   /// 消息内容
   final Widget? content;
@@ -157,6 +156,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    if (widget.contentBuilder == null || widget.content == null) return widget.child;
     return CompositedTransformTarget(
       link: _layerLink,
       child: GestureDetector(
@@ -265,14 +265,10 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
           };
 
           final Offset contentBoxOffset = switch (builder.targetAnchor) {
-            Alignment.bottomCenter when widget.offsetIgnore =>
-              Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
-            Alignment.topCenter when widget.offsetIgnore =>
-              Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
-            Alignment.centerLeft when widget.offsetIgnore =>
-              Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
-            Alignment.centerRight when widget.offsetIgnore =>
-              Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
+            Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
+            Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
+            Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
+            Alignment.centerRight when widget.offsetIgnore => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
             Alignment.bottomCenter => Offset(builder.offset.dx, widget.arrowSize.height + (widget.arrowSpacing) - 1),
             Alignment.topCenter => Offset(builder.offset.dx, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
             Alignment.centerLeft => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, builder.offset.dy),
@@ -368,8 +364,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     // 计算目标组件的度量信息
     final targetSize = renderBox.size;
     final targetPosition = renderBox.localToGlobal(Offset.zero);
-    final targetCenterPosition =
-        Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
+    final targetCenterPosition = Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
 
     // 计算可用的屏幕高度（减去键盘高度）
     final screenHeight = MediaQuery.of(context).size.height;
