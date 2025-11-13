@@ -156,7 +156,8 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    if (widget.contentBuilder == null || widget.content == null) return widget.child;
+    // 表示不启用
+    if (widget.contentBuilder == null && widget.content == null) return widget.child;
     return CompositedTransformTarget(
       link: _layerLink,
       child: GestureDetector(
