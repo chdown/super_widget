@@ -54,7 +54,7 @@ class SuperTooltip extends StatefulWidget {
     this.offsetIgnore = false,
     this.position,
   })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative'),
-        assert(content == null && contentBuilder == null, 'content or contentBuilder must set one');
+        assert(content == null || contentBuilder == null, 'content or contentBuilder must set one');
 
   /// 消息内容
   final Widget? content;
