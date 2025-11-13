@@ -36,7 +36,8 @@ class TooltipController extends ChangeNotifier {
 class SuperTooltip extends StatefulWidget {
   const SuperTooltip({
     super.key,
-    required this.content,
+    this.content,
+    this.contentBuilder,
     required this.child,
     this.arrowColor = Colors.black,
     this.arrowSize = const Size(10, 10),
@@ -52,10 +53,14 @@ class SuperTooltip extends StatefulWidget {
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
-  })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative');
+  })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative'),
+        assert(content == null && contentBuilder == null, 'content or contentBuilder must set one');
 
   /// 消息内容
-  final Widget content;
+  final Widget? content;
+
+  /// 消息内容构造器，对于需要动态处理的内容使用
+  final Widget Function()? contentBuilder;
 
   /// 目标组件
   final Widget child;
@@ -169,6 +174,8 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final resolvedPadding = widget.contentPadding.resolve(TextDirection.ltr);
     final horizontalPadding = resolvedPadding.left + resolvedPadding.right;
 
+    Widget contentWidget = widget.contentBuilder != null ? widget.contentBuilder!() : widget.content!;
+
     final Widget contentBox = Material(
       type: MaterialType.transparency,
       child: ConstrainedBox(
@@ -189,7 +196,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
                   ),
                 ],
               ),
-          child: widget.content,
+          child: contentWidget,
         ),
       ),
     );
@@ -258,10 +265,14 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
           };
 
           final Offset contentBoxOffset = switch (builder.targetAnchor) {
-            Alignment.bottomCenter when widget.offsetIgnore => Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
-            Alignment.topCenter when widget.offsetIgnore => Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
-            Alignment.centerLeft when widget.offsetIgnore => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
-            Alignment.centerRight when widget.offsetIgnore => Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
+            Alignment.bottomCenter when widget.offsetIgnore =>
+              Offset(0, widget.arrowSize.height + (widget.arrowSpacing) - 1),
+            Alignment.topCenter when widget.offsetIgnore =>
+              Offset(0, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
+            Alignment.centerLeft when widget.offsetIgnore =>
+              Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, 0),
+            Alignment.centerRight when widget.offsetIgnore =>
+              Offset((widget.arrowSpacing) + widget.arrowSize.width - 1, 0),
             Alignment.bottomCenter => Offset(builder.offset.dx, widget.arrowSize.height + (widget.arrowSpacing) - 1),
             Alignment.topCenter => Offset(builder.offset.dx, -widget.arrowSize.height - (widget.arrowSpacing) + 1),
             Alignment.centerLeft => Offset(-(widget.arrowSpacing) - widget.arrowSize.width + 1, builder.offset.dy),
@@ -343,7 +354,8 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   /// - followerAnchor: 提示框上的锚点
   /// - offset: 防止边缘溢出的额外偏移
   /// - dyOffset: 当空间不足时居中显示的额外 Y 轴偏移
-  ({Alignment targetAnchor, Alignment followerAnchor, Offset offset, double dyOffset})? _builder(Size contentBoxSize, double keyboardHeight) {
+  ({Alignment targetAnchor, Alignment followerAnchor, Offset offset, double dyOffset})? _builder(
+      Size contentBoxSize, double keyboardHeight) {
     final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
 
     if (renderBox == null) {
@@ -356,7 +368,8 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     // 计算目标组件的度量信息
     final targetSize = renderBox.size;
     final targetPosition = renderBox.localToGlobal(Offset.zero);
-    final targetCenterPosition = Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
+    final targetCenterPosition =
+        Offset(targetPosition.dx + targetSize.width / 2, targetPosition.dy + targetSize.height / 2);
 
     // 计算可用的屏幕高度（减去键盘高度）
     final screenHeight = MediaQuery.of(context).size.height;
