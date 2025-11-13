@@ -261,7 +261,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
                   SuperExpandableText(
                     text: '这是一段可选中的文本示例。你可以长按或拖动来选中文本内容。当选中文本时，会在下方显示选中的文本内容和选中范围。通过 onSelectionChanged 参数，组件会自动使用 SelectableText 替代 RichText，支持文本选中功能。这个功能适用于需要用户能够复制或分享文本内容的场景。',
                     maxLines: 3,
-                    builder: (textSpan) {
+                    builder: (textSpan,endOffset) {
                       return SelectableText.rich(
                         textSpan,
                       );
