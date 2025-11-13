@@ -355,6 +355,9 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       throw Exception('RenderBox is null');
     }
 
+    // 解析 contentPadding 以便访问具体的边距值
+    final resolvedPadding = widget.contentPadding.resolve(TextDirection.ltr);
+
     // 计算目标组件的度量信息
     final targetSize = renderBox.size;
     final targetPosition = renderBox.localToGlobal(Offset.zero);
@@ -395,14 +398,14 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     // 调整水平位置以防止边缘溢出
     double dx = 0;
 
-    if (edgeFromHorizontal < widget.contentPadding.horizontal / 2) {
+    if (edgeFromHorizontal < resolvedPadding.horizontal / 2) {
       // 需要调整水平位置以避免边缘溢出
       if (edgeFromLeft < edgeFromRight) {
         // 左边空间不足，向右调整
-        dx = (widget.contentPadding.horizontal / 2) - edgeFromHorizontal;
+        dx = (resolvedPadding.horizontal / 2) - edgeFromHorizontal;
       } else {
         // 右边空间不足，向左调整
-        dx = -(widget.contentPadding.horizontal / 2) + edgeFromHorizontal;
+        dx = -(resolvedPadding.horizontal / 2) + edgeFromHorizontal;
       }
     }
 
@@ -416,11 +419,11 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     // 调整垂直位置以防止边缘溢出
     double dy = 0;
 
-    if (edgeFromVertical < widget.contentPadding.vertical / 2) {
+    if (edgeFromVertical < resolvedPadding.vertical / 2) {
       if (showTooltipBelow) {
-        dy = MediaQuery.of(context).padding.top + (widget.contentPadding.vertical / 2) - edgeFromVertical;
+        dy = MediaQuery.paddingOf(context).top + (resolvedPadding.vertical / 2) - edgeFromVertical;
       } else {
-        dy = MediaQuery.of(context).padding.bottom - (widget.contentPadding.vertical / 2) + edgeFromVertical;
+        dy = MediaQuery.paddingOf(context).bottom - (resolvedPadding.vertical / 2) + edgeFromVertical;
       }
     }
 
