@@ -4,6 +4,16 @@ import 'package:flutter/material.dart';
 
 /// 简化版可展开文本组件
 /// 支持展开/收起功能，支持外部富文本控制
+///
+/// 如果需要复制功能，通过 [builder] 方法进行构造，eg:
+// SuperExpandableText(
+//   text: '这是一段可选中的文本示例。你可以长按或拖动来选中文本内容。当选中文本时，会在下方显示选中的文本内容和选中范围。通过 onSelectionChanged 参数，组件会自动使用 SelectableText 替代 RichText，支持文本选中功能。这个功能适用于需要用户能够复制或分享文本内容的场景。',
+//   maxLines: 3,
+//   builder: (textSpan) {
+//     return SelectableText.rich(textSpan);
+//   },
+// )
+///
 class SuperExpandableText extends StatefulWidget {
   const SuperExpandableText({
     super.key,
@@ -16,6 +26,7 @@ class SuperExpandableText extends StatefulWidget {
     this.collapseStyle,
     this.onExpanded,
     this.richTextSpans,
+    this.builder,
   });
 
   /// 文本内容
@@ -44,6 +55,10 @@ class SuperExpandableText extends StatefulWidget {
 
   /// 富文本片段列表
   final List<TextSpan>? richTextSpans;
+
+  /// 构造方法
+  /// [endOffset] 截断是返回
+  final Widget Function(TextSpan textSpan,int? endOffset)? builder;
 
   @override
   State<SuperExpandableText> createState() => _SuperExpandableTextState();
@@ -127,13 +142,14 @@ class _SuperExpandableTextState extends State<SuperExpandableText> {
 
         // 判断是否需要截断
         TextSpan textSpan;
+        int? endOffset;
         if (textPainter.didExceedMaxLines) {
           // 需要截断
           final position = textPainter.getPositionForOffset(Offset(
             textSize.width - linkSize.width,
             textSize.height,
           ));
-          final endOffset = textPainter.getOffsetBefore(position.offset) ?? 0;
+          endOffset = textPainter.getOffsetBefore(position.offset) ?? 0;
 
           if (_expanded) {
             // 已展开：显示全部内容 + 收起按钮
@@ -175,13 +191,15 @@ class _SuperExpandableTextState extends State<SuperExpandableText> {
           }
         }
 
-        return RichText(
-          text: textSpan,
-          softWrap: true,
-          textDirection: textDirection,
-          textScaleFactor: textScaleFactor,
-          overflow: TextOverflow.clip,
-        );
+        return widget.builder != null
+            ? widget.builder!(textSpan, endOffset)
+            : RichText(
+                text: textSpan,
+                softWrap: true,
+                textDirection: textDirection,
+                textScaleFactor: textScaleFactor,
+                overflow: TextOverflow.clip,
+              );
       },
     );
   }

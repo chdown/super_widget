@@ -11,6 +11,8 @@ class SuperExpandableTextExample extends StatefulWidget {
 
 class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample> {
   int _clickCount = 0;
+  String _selectedText = '';
+  TextSelection? _textSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -250,13 +252,62 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
               ),
             ),
 
+            _buildExample(
+              title: '9. 文本选中回调',
+              description: '监听文本选中变化（使用 SelectableText）',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SuperExpandableText(
+                    text: '这是一段可选中的文本示例。你可以长按或拖动来选中文本内容。当选中文本时，会在下方显示选中的文本内容和选中范围。通过 onSelectionChanged 参数，组件会自动使用 SelectableText 替代 RichText，支持文本选中功能。这个功能适用于需要用户能够复制或分享文本内容的场景。',
+                    maxLines: 3,
+                    builder: (textSpan) {
+                      return SelectableText.rich(
+                        textSpan,
+                      );
+                    },
+                  ),
+                  if (_textSelection != null && _textSelection!.start != _textSelection!.end)
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue.shade200),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '选中范围: ${_textSelection!.start} - ${_textSelection!.end}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '选中内容: $_selectedText',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
             const SizedBox(height: 32),
 
             // ==================== 特殊场景 ====================
             _buildCategory('特殊场景'),
 
             _buildExample(
-              title: '9. 换行符文本',
+              title: '10. 换行符文本',
               description: '包含换行符的文本',
               child: const SuperExpandableText(
                 text: '第一行：这是第一行的内容\n第二行：这是第二行的内容\n第三行：这是第三行的内容\n第四行：这是第四行的内容\n第五行：这是第五行的内容',
@@ -265,7 +316,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             ),
 
             _buildExample(
-              title: '10. 数字换行',
+              title: '11. 数字换行',
               description: '1\\n2\\n3\\n... 形式的文本',
               child: const SuperExpandableText(
                 text: '1\n2\n3\n4\n5\n6\n7\n8\n9\n10',
@@ -274,7 +325,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             ),
 
             _buildExample(
-              title: '11. 富文本换行',
+              title: '12. 富文本换行',
               description: '富文本中包含换行符',
               child: SuperExpandableText(
                 text: '',
@@ -305,7 +356,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             _buildCategory('边界情况'),
 
             _buildExample(
-              title: '12. 短文本',
+              title: '13. 短文本',
               description: '不需要展开的短文本',
               child: const SuperExpandableText(
                 text: '这是短文本。',
@@ -314,7 +365,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             ),
 
             _buildExample(
-              title: '13. 空文本',
+              title: '14. 空文本',
               description: '文本为空字符串',
               child: const SuperExpandableText(
                 text: '',
@@ -323,7 +374,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             ),
 
             _buildExample(
-              title: '14. 样式继承',
+              title: '15. 样式继承',
               description: '继承父级 DefaultTextStyle',
               child: const DefaultTextStyle(
                 style: TextStyle(
@@ -339,7 +390,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             ),
 
             _buildExample(
-              title: '15. 不同 maxLines',
+              title: '16. 不同 maxLines',
               description: 'maxLines = 1',
               child: const SuperExpandableText(
                 text: '这是一段测试文本，maxLines 设置为 1，所以只会显示一行。',
@@ -348,7 +399,7 @@ class _SuperExpandableTextExampleState extends State<SuperExpandableTextExample>
             ),
 
             _buildExample(
-              title: '16. 默认展开',
+              title: '17. 默认展开',
               description: '初始状态为展开状态',
               child: const SuperExpandableText(
                 text: '这个示例默认就是展开状态。通过设置 expanded: true 参数，可以让文本在初始加载时就显示完整内容，而不是截断状态。用户可以点击收起按钮将文本折叠。这个功能适用于重要信息需要默认展示的场景。',
