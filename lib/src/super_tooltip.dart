@@ -41,11 +41,10 @@ class SuperTooltip extends StatefulWidget {
     this.arrowColor = Colors.black,
     this.arrowSize = const Size(10, 10),
     this.arrowSpacing = 4,
-    this.arrowRadius = 2,
     this.onBeforeShow,
     this.onAfterDismiss,
     this.controller,
-    this.contentPadding = const EdgeInsets.all(16),
+    this.contentPadding = const EdgeInsets.all(8),
     this.contentBackgroundColor = Colors.black,
     this.contentRadius,
     this.contentDecoration,
@@ -53,8 +52,7 @@ class SuperTooltip extends StatefulWidget {
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
-  })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative'),
-        assert(arrowRadius >= 0, 'arrowRadius must be non-negative');
+  })  : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative');
 
   /// 消息内容
   final Widget content;
@@ -70,9 +68,6 @@ class SuperTooltip extends StatefulWidget {
 
   /// 箭头与目标之间的间距
   final double arrowSpacing;
-
-  /// 箭头圆角
-  final double arrowRadius;
 
   /// 显示前回调
   final VoidCallback? onBeforeShow;
