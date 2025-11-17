@@ -59,7 +59,7 @@ class SuperTooltip extends StatefulWidget {
   final Widget? content;
 
   /// 消息内容构造器，对于需要动态处理的内容使用
-  final Widget Function()? contentBuilder;
+  final Widget Function(TooltipController controller)? contentBuilder;
 
   /// 目标组件
   final Widget child;
@@ -175,7 +175,7 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     final resolvedPadding = widget.contentPadding.resolve(TextDirection.ltr);
     final horizontalPadding = resolvedPadding.left + resolvedPadding.right;
 
-    Widget contentWidget = widget.contentBuilder != null ? widget.contentBuilder!() : widget.content!;
+    Widget contentWidget = widget.contentBuilder != null ? widget.contentBuilder!(_controller) : widget.content!;
 
     final Widget contentBox = Material(
       type: MaterialType.transparency,
