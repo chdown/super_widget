@@ -131,21 +131,6 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     super.initState();
   }
 
-  @override
-  void dispose() {
-    dismiss();
-    _controller.removeListener(listener);
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
-
-    _overlayEntry?.remove();
-    _backgroundEntry?.remove();
-    _animationController.dispose();
-
-    super.dispose();
-  }
-
   void listener() {
     if (_controller.isShow == true) {
       show();
@@ -158,19 +143,45 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     // 表示不启用
     if (widget.contentBuilder == null && widget.content == null) return widget.child;
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: widget.isLongPress ? null : _controller.toggle,
-        onLongPress: !widget.isLongPress ? null : _controller.toggle,
-        child: SizedBox(key: key, child: widget.child),
+
+    return PopScope(
+      canPop: _overlayEntry == null, // 如果有 popup 显示，则不允许直接退出
+      onPopInvokedWithResult: (didPop, result) {
+        // 如果有 popup 显示且页面没有退出，则关闭 popup
+        if (!didPop && _overlayEntry != null) {
+          _controller.dismiss();
+        }
+      },
+      child: CompositedTransformTarget(
+        link: _layerLink,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: widget.isLongPress ? null : _controller.toggle,
+          onLongPress: !widget.isLongPress ? null : _controller.toggle,
+          child: SizedBox(key: key, child: widget.child),
+        ),
       ),
     );
   }
 
+  @override
+  void dispose() {
+    // 页面销毁时，立即清理 overlay，不播放动画
+    _removeOverlays();
+    _controller.removeListener(listener);
+    // 只有当 controller 是内部创建时才销毁
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void show() {
     if (_animationController.isAnimating) return;
+
+    // 如果已有 overlay 显示，先清理
+    if (_overlayEntry != null) _removeOverlays();
 
     final resolvedPadding = widget.contentPadding.resolve(TextDirection.ltr);
     final horizontalPadding = resolvedPadding.left + resolvedPadding.right;
@@ -218,6 +229,12 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     Overlay.of(context).insert(_overlayEntry!);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 检查 widget 是否已销毁
+      if (!mounted) {
+        _removeOverlays();
+        return;
+      }
+
       final contentBoxRenderBox = contentBoxKey.currentContext?.findRenderObject() as RenderBox?;
       final contentBoxSize = contentBoxRenderBox?.size;
 
@@ -326,19 +343,48 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
       Overlay.of(context).insert(_overlayEntry!);
 
       _animationController.forward();
+      // 更新 PopScope 状态
+      _updatePopScopeState();
     });
 
     widget.onBeforeShow?.call();
   }
 
   Future<void> dismiss() async {
-    if (_overlayEntry != null) {
+    if (_overlayEntry == null) return;
+
+    // 如果 widget 已销毁，直接清理
+    if (mounted) {
+      // 播放反向动画
+      // reverse() 会自动处理当前动画状态（即使正在 forward 也能正确 reverse）
       await _animationController.reverse();
-      _overlayEntry?.remove();
-      _backgroundEntry?.remove();
-      _overlayEntry = null;
-      _backgroundEntry = null;
-      widget.onAfterDismiss?.call();
+    }
+
+    // 动画结束后移除
+    _removeOverlays();
+
+    // 回调和状态更新
+    widget.onAfterDismiss?.call();
+    _updatePopScopeState();
+  }
+
+  /// 统一的 overlay 移除方法
+  ///
+  /// [immediate] 为 true 时立即移除，不播放动画
+  void _removeOverlays() {
+    if (_overlayEntry == null) return;
+    // 立即停止动画并移除
+    _animationController.stop();
+    _overlayEntry?.remove();
+    _backgroundEntry?.remove();
+    _overlayEntry = null;
+    _backgroundEntry = null;
+  }
+
+  /// 更新 PopScope 状态
+  void _updatePopScopeState() {
+    if (mounted) {
+      setState(() {});
     }
   }
 

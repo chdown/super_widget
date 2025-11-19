@@ -1,3 +1,4 @@
+import 'package:example/super_text_filed_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:super_widget/super_widget.dart';
 
@@ -191,6 +192,9 @@ class _SuperTooltipKeyboardScrollTestState extends State<SuperTooltipKeyboardScr
                   barrierColor: Colors.black.withOpacity(0.3),
                   onBeforeShow: () {
                     setState(() => _statusMessage = '项目 #${index.toString().padLeft(2, '0')} Tooltip 显示');
+                    Future.delayed(Duration(seconds: 3),() {
+                      Navigator.pushNamed(context, '/expandable_text');
+                    },);
                   },
                   child: Container(
                     decoration: BoxDecoration(
