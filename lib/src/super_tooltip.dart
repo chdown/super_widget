@@ -14,6 +14,12 @@ enum TooltipPosition {
   auto,
 }
 
+/// 全局路由观察者，用于自动关闭 Tooltip
+/// 使用方法：
+/// 1. 在 MaterialApp 中注册：navigatorObservers: [superTooltipRouteObserver]
+/// 2. SuperTooltip 会自动使用它来监听路由变化
+final RouteObserver<ModalRoute<void>> superTooltipRouteObserver = RouteObserver<ModalRoute<void>>();
+
 class TooltipController extends ChangeNotifier {
   bool _isShow = false;
 
@@ -53,6 +59,7 @@ class SuperTooltip extends StatefulWidget {
     this.isLongPress = false,
     this.offsetIgnore = false,
     this.position,
+    this.routeObserver,
   }) : assert(arrowSpacing >= 0, 'arrowSpacing must be non-negative');
 
   /// 消息内容
@@ -106,11 +113,15 @@ class SuperTooltip extends StatefulWidget {
   /// 提示框方向
   final TooltipPosition? position;
 
+  /// 路由观察者，用于在跳转新页面时自动关闭 Tooltip
+  /// 需要在 MaterialApp 中注册此 Observer
+  final RouteObserver<ModalRoute>? routeObserver;
+
   @override
   State<SuperTooltip> createState() => _SuperTooltipState();
 }
 
-class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderStateMixin {
+class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderStateMixin, RouteAware {
   late final AnimationController _animationController;
   late final Animation<double> _animation;
   late final TooltipController _controller;
@@ -129,6 +140,24 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
     _controller = widget.controller ?? TooltipController();
     _controller.addListener(listener);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 订阅路由变化
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      // 优先使用传入的 observer，否则使用全局默认的
+      final observer = widget.routeObserver ?? superTooltipRouteObserver;
+      observer.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    // 当新页面入栈时，关闭 Tooltip
+    dismiss();
   }
 
   void listener() {
@@ -166,6 +195,9 @@ class _SuperTooltipState extends State<SuperTooltip> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    // 取消订阅路由变化
+    final observer = widget.routeObserver ?? superTooltipRouteObserver;
+    observer.unsubscribe(this);
     // 页面销毁时，立即清理 overlay，不播放动画
     _removeOverlays();
     _controller.removeListener(listener);
