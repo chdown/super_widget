@@ -102,6 +102,8 @@ class SuperLoadController {
     _state = state;
   }
 
+  String? get tag => _state?._pageTag;
+
   void showError() => _state?.showPage(SuperLoadStatus.error.name);
 
   void showEmpty() => _state?.showPage(SuperLoadStatus.empty.name);
