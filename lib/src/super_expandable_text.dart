@@ -9,25 +9,12 @@ import 'package:flutter/material.dart';
 // SuperExpandableText(
 //   text: '这是一段可选中的文本示例。你可以长按或拖动来选中文本内容。当选中文本时，会在下方显示选中的文本内容和选中范围。通过 onSelectionChanged 参数，组件会自动使用 SelectableText 替代 RichText，支持文本选中功能。这个功能适用于需要用户能够复制或分享文本内容的场景。',
 //   maxLines: 3,
-//   builder: (textSpan) {
-//     return SelectableText.rich(textSpan);
+//   builder: (textSpan, int? endOffset) {
+//     return SelectableText.rich(textSpan, scrollPhysics: NeverScrollableScrollPhysics());
 //   },
 // )
 ///
 class SuperExpandableText extends StatefulWidget {
-  const SuperExpandableText({
-    super.key,
-    required this.text,
-    this.expandText = '展开',
-    this.collapseText = '收起',
-    this.maxLines = 3,
-    this.expanded = false,
-    this.textStyle,
-    this.collapseStyle,
-    this.onExpanded,
-    this.richTextSpans,
-    this.builder,
-  });
 
   /// 文本内容
   final String text;
@@ -59,6 +46,20 @@ class SuperExpandableText extends StatefulWidget {
   /// 构造方法
   /// [endOffset] 截断是返回
   final Widget Function(TextSpan textSpan,int? endOffset)? builder;
+
+  const SuperExpandableText({
+    super.key,
+    required this.text,
+    this.expandText = '展开',
+    this.collapseText = '收起',
+    this.maxLines = 3,
+    this.expanded = false,
+    this.textStyle,
+    this.collapseStyle,
+    this.onExpanded,
+    this.richTextSpans,
+    this.builder,
+  });
 
   @override
   State<SuperExpandableText> createState() => _SuperExpandableTextState();
