@@ -57,22 +57,41 @@ class _LoadPageState extends State<SuperLoad> {
   /// 当前展示的页面,默认为content
   late String _pageTag;
 
+  /// 缓存的 pages,避免每次 build 都重新解析
+  late Map<String, Widget> _cachedPages;
+
   @override
   void initState() {
     super.initState();
-    _pageTag = widget.defaultStateTag ?? SuperLoad.defaultLoadStatus.name;
+    _pageTag = widget.controller.tag ?? widget.defaultStateTag ?? SuperLoad.defaultLoadStatus.name;
+    _cachedPages = _parsePages(); // 初始化时解析一次
     widget.controller._bind(this);
   }
 
   @override
+  void didUpdateWidget(SuperLoad oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 检查影响 pages 的参数是否变化
+    if (widget.otherPages != oldWidget.otherPages ||
+        widget.onTap != oldWidget.onTap ||
+        widget.params != oldWidget.params) {
+      _cachedPages = _parsePages(); // 参数变化时重新解析
+    }
+    // 如果 controller 变化,重新绑定
+    if (widget.controller != oldWidget.controller) {
+      widget.controller._bind(this);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var pages = parsePages();
+    // 直接使用缓存的 pages,不再重复计算
     if (_pageTag == SuperLoadStatus.content.name) return widget.child;
-    return widget.stateBuilder == null ? pages[_pageTag] : widget.stateBuilder!.call(pages[_pageTag]);
+    return widget.stateBuilder == null ? _cachedPages[_pageTag]! : widget.stateBuilder!.call(_cachedPages[_pageTag]!);
   }
 
   /// 解析获取pages
-  parsePages() {
+  Map<String, Widget> _parsePages() {
     var pageMap = SuperLoad._defaultPages ?? <String, SuperLoadPage>{};
     pageMap.addAll(widget.otherPages ?? {});
     pageMap.forEach((tag, loadWidget) {
