@@ -54,40 +54,36 @@ class SuperLoad extends StatefulWidget {
 }
 
 class _LoadPageState extends State<SuperLoad> {
-  /// 当前展示的页面,默认为content
-  late String _pageTag;
-
   /// 缓存的 pages,避免每次 build 都重新解析
   late Map<String, Widget> _cachedPages;
 
   @override
   void initState() {
-    super.initState();
-    _pageTag = widget.controller.tag ?? widget.defaultStateTag ?? SuperLoad.defaultLoadStatus.name;
     _cachedPages = _parsePages(); // 初始化时解析一次
-    widget.controller._bind(this);
+    widget.controller._bind(this, widget.defaultStateTag ?? SuperLoad.defaultLoadStatus.name);
+    super.initState();
   }
 
   @override
   void didUpdateWidget(SuperLoad oldWidget) {
     super.didUpdateWidget(oldWidget);
     // 检查影响 pages 的参数是否变化
-    if (widget.otherPages != oldWidget.otherPages ||
-        widget.onTap != oldWidget.onTap ||
-        widget.params != oldWidget.params) {
+    if (widget.otherPages != oldWidget.otherPages || widget.onTap != oldWidget.onTap || widget.params != oldWidget.params) {
       _cachedPages = _parsePages(); // 参数变化时重新解析
     }
     // 如果 controller 变化,重新绑定
-    if (widget.controller != oldWidget.controller) {
-      widget.controller._bind(this);
+    if (widget.controller != oldWidget.controller || widget.defaultStateTag != oldWidget.defaultStateTag) {
+      widget.controller._bind(this, widget.defaultStateTag ?? SuperLoad.defaultLoadStatus.name);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     // 直接使用缓存的 pages,不再重复计算
-    if (_pageTag == SuperLoadStatus.content.name) return widget.child;
-    return widget.stateBuilder == null ? _cachedPages[_pageTag]! : widget.stateBuilder!.call(_cachedPages[_pageTag]!);
+    if (widget.controller.tag == SuperLoadStatus.content.name) return widget.child;
+    return widget.stateBuilder == null
+        ? _cachedPages[widget.controller.tag]!
+        : widget.stateBuilder!.call(_cachedPages[widget.controller.tag]!);
   }
 
   /// 解析获取pages
@@ -102,13 +98,9 @@ class _LoadPageState extends State<SuperLoad> {
   }
 
   /// 切换页面的方法
-  void showPage(String tag) {
+  void refreshPage() {
     if (!mounted) return;
-    if (_pageTag != tag && mounted) {
-      setState(() {
-        _pageTag = tag;
-      });
-    }
+    setState(() {});
   }
 }
 
@@ -116,26 +108,32 @@ class SuperLoadController {
   /// [LoadPage] sate.
   _LoadPageState? _state;
 
+  String? tag;
+
   /// 绑定LoadPage
-  void _bind(_LoadPageState state) {
+  void _bind(_LoadPageState state, String defaultTag) {
+    tag ??= defaultTag;
     _state = state;
   }
 
-  String? get tag => _state?._pageTag;
+  void showError() => _showPage(SuperLoadStatus.error.name);
 
-  void showError() => _state?.showPage(SuperLoadStatus.error.name);
+  void showEmpty() => _showPage(SuperLoadStatus.empty.name);
 
-  void showEmpty() => _state?.showPage(SuperLoadStatus.empty.name);
+  void showNetError() => _showPage(SuperLoadStatus.netError.name);
 
-  void showNetError() => _state?.showPage(SuperLoadStatus.netError.name);
+  void showLoading() => _showPage(SuperLoadStatus.loading.name);
 
-  void showLoading() => _state?.showPage(SuperLoadStatus.loading.name);
+  void showContent() => _showPage(SuperLoadStatus.content.name);
 
-  void showContent() => _state?.showPage(SuperLoadStatus.content.name);
+  void showOther() => _showPage(SuperLoadStatus.other.name);
 
-  void showOther() => _state?.showPage(SuperLoadStatus.other.name);
+  void showCustom(String customTag) => _showPage(customTag);
 
-  void showCustom(String customTag) => _state?.showPage(customTag);
+  void _showPage(String tag) {
+    this.tag = tag;
+    _state?.refreshPage();
+  }
 
   void dispose() {
     _state = null;
