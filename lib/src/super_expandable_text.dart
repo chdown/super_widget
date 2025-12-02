@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 /// 支持展开/收起功能，支持外部富文本控制
 ///
 /// 如果需要复制功能，通过 [builder] 方法进行构造，eg:
+/// SelectableText默认光标宽度约为2.0，会影响最终的计算，可以通过[toleranceWidth]进行容错。
 // SuperExpandableText(
 //   text: '这是一段可选中的文本示例。你可以长按或拖动来选中文本内容。当选中文本时，会在下方显示选中的文本内容和选中范围。通过 onSelectionChanged 参数，组件会自动使用 SelectableText 替代 RichText，支持文本选中功能。这个功能适用于需要用户能够复制或分享文本内容的场景。',
 //   maxLines: 3,
+//   toleranceWidth: 2.0,
 //   builder: (textSpan, int? endOffset) {
 //     return SelectableText.rich(textSpan, scrollPhysics: NeverScrollableScrollPhysics());
 //   },
@@ -44,8 +46,15 @@ class SuperExpandableText extends StatefulWidget {
   final List<TextSpan>? richTextSpans;
 
   /// 构造方法
-  /// [endOffset] 截断是返回
+  /// [endOffset] 截断时返回
   final Widget Function(TextSpan textSpan,int? endOffset)? builder;
+
+  /// 容错宽度
+  /// 当使用 [builder] 时,从可用宽度中减去此值以补偿渲染差异。
+  /// 例如 SelectableText 的光标会占用约 2.0 的宽度。
+  /// 默认值为 0,表示不做补偿。
+  /// 如果 [builder] 为 null,此参数将被忽略。
+  final double? toleranceWidth;
 
   const SuperExpandableText({
     super.key,
@@ -59,6 +68,7 @@ class SuperExpandableText extends StatefulWidget {
     this.onExpanded,
     this.richTextSpans,
     this.builder,
+    this.toleranceWidth,
   });
 
   @override
@@ -122,6 +132,10 @@ class _SuperExpandableTextState extends State<SuperExpandableText> {
           recognizer: _linkTapGestureRecognizer,
         );
 
+        // 如果使用 builder,需要减去容错宽度以匹配实际渲染
+        // SelectableText 等组件可能会占用额外宽度(如光标、边距等)
+        final double effectiveMaxWidth = maxWidth - (widget.toleranceWidth ?? 0);  // 减去容错宽度,默认 0
+
         // 测量链接按钮的尺寸
         TextPainter textPainter = TextPainter(
           text: link,
@@ -130,7 +144,7 @@ class _SuperExpandableTextState extends State<SuperExpandableText> {
           maxLines: widget.maxLines,
           locale: locale,
         );
-        textPainter.layout(minWidth: 0, maxWidth: maxWidth);
+        textPainter.layout(minWidth: 0, maxWidth: effectiveMaxWidth);
         final linkSize = textPainter.size;
 
         // 构建内容
@@ -138,7 +152,7 @@ class _SuperExpandableTextState extends State<SuperExpandableText> {
 
         // 测量内容的尺寸
         textPainter.text = content;
-        textPainter.layout(minWidth: 0, maxWidth: maxWidth);
+        textPainter.layout(minWidth: 0, maxWidth: effectiveMaxWidth);
         final textSize = textPainter.size;
 
         // 判断是否需要截断
